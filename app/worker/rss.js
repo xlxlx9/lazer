@@ -6,6 +6,21 @@ Reader.prototype.require = function(src) {
 	return require("http");
 }
 
+Reader.prototype.digest = function(chunk, source) {
+	//console.log("data " + chunk);
+	require('xml2js').parseString(chunk, function(err, result) {
+		if(err) {
+			console.log("Parsing error for %s: %s", source.title, source.src);
+			return;
+		}
+		var attrs = [];
+		for(var k in result) {
+			attrs.push(k);
+		}
+		console.log("attributes from %s's xml: %s", source.title, attrs.join());
+	});
+}
+
 Reader.prototype.revisit = function(gl) {
 	var Source = require("../models/source");
 	if(gl.reading) {
@@ -16,6 +31,7 @@ Reader.prototype.revisit = function(gl) {
 	gl.error = {};
 	var idx = 0;
 	var _this = this;
+	var data = "";
 	Source.find(function(err, sources) {
 		if(err) {
 			console.error(err);
@@ -23,14 +39,21 @@ Reader.prototype.revisit = function(gl) {
 		}
 		var callback = function(res) {
 			console.log("Got one response from %s", sources[idx].src);
-			idx ++;
-			if(idx >= sources.length) {
-				gl.reading = false; // completed
-				console.log("Finished for this round");
-			} else {
-				var si = sources[idx];
-				_this.require(si.src).get(si.src, callback).on('error', on_error);
-			}
+			res.on("data", function(chunk) {
+				data += chunk;
+			});
+			res.on("end", function() {
+				_this.digest(data, sources[idx]);
+				data = "";  // clear for new request
+				idx ++;
+				if(idx >= sources.length) {
+					gl.reading = false; // completed
+					console.log("Finished for this round");
+				} else {
+					var si = sources[idx];
+					_this.require(si.src).get(si.src, callback).on('error', on_error);
+				}
+			});
 		};
 		var on_error = function(e) {
 			console.log("Got one error from %s", sources[idx].src);
@@ -44,6 +67,7 @@ Reader.prototype.revisit = function(gl) {
 				gl.reading = false; // completed
 				console.log("Finished for this round");
 			} else {
+				data = "";// clear for new request
 				var si = sources[idx];
 				_this.require(si.src).get(si.src, callback).on('error', on_error);
 			}
