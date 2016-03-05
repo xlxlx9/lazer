@@ -22,6 +22,7 @@ mongoose.connection.on('error', function (err) {
 });
 
 var empty = require("./app/util/empty");
+var Source = require('./app/models/item');
 var Source = require('./app/models/source');
 var Channel = require('./app/models/channel');
 
@@ -153,6 +154,14 @@ router.route("/channels/:channel_id")
 			res.send(channel);
 		  });
 	  })
+	  /*  // test populate
+	  .get(function(req, res) { // find a channel by id
+		  Channel.findById(req.params.channel_id).populate("sources").exec(function(err, channel) {
+			if(err) res.send(err);
+			res.send(channel);
+		  });
+	  })
+	  */
 	  .put(function(req, res) {
 	  	  if(empty.chreqbody(["title"], req)) res.send({ succ: -9 });
 		  Channel.findById(req.params.channel_id, function(err, channel) {
