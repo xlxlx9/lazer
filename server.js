@@ -22,11 +22,19 @@ mongoose.connection.on('error', function (err) {
 });
 
 var empty = require("./app/util/empty");
-var Source = require('./app/models/item');
+//var Item = require('./app/models/item');
 var Source = require('./app/models/source');
 var Channel = require('./app/models/channel');
+var rss = require("./app/worker/rss");
 
 var port = process.env.PORT || 8080;        // set our port
+var gl = { rss: {} };
+rss.revisit(gl.rss);
+
+var minutes = 10;
+setInterval(function() {
+	rss.revisit(gl.rss);
+}, minutes * 60 * 1000);
 
 // ROUTES FOR OUR API
 // =============================================================================
