@@ -6,8 +6,15 @@ Reader.prototype.require = function(src) {
 	return require("http");
 }
 
+Reader.prototype.guess(list, obj) {
+	if(null == list || 1 > list.length) return;
+	for(var i in list) {
+		if(obj.hasOwnProperty(list[i])) return obj[list[i]];
+	}
+	return null;
+}
+
 Reader.prototype.digest = function(chunk, source) {
-	//console.log("data " + chunk);
 	require('xml2js').parseString(chunk, function(err, result) {
 		if(err) {
 			console.log("Parsing error for %s: %s", source.title, source.src);
