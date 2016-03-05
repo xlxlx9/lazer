@@ -21,7 +21,9 @@ mongoose.connection.on('error', function (err) {
 	console.log("mongoose connection err!" + err);
 });
 
-var Bear     = require('./app/models/bear');
+
+var empty = require("./app/util/empty");
+var Source = require('./app/models/source');
 
 var port = process.env.PORT || 8080;        // set our port
 
@@ -43,83 +45,84 @@ router.get('/', function(req, res) {
 
 // more routes for our API will happen here
 
-// on routes that end in /bears
+// on routes that end in /sources
 // ----------------------------------------------------
-router.route('/bears')
+router.route('/sources')
 
-    // create a bear (accessed at POST http://localhost:8080/api/bears)
+    // create a source (accessed at POST http://localhost:8080/api/sources)
     .post(function(req, res) {
-		
-		console.log("Post received: " + req.body.name);        
-        var bear = new Bear();      // create a new instance of the Bear model
-        bear.name = req.body.name;  // set the bears name (comes from the request)
+		if(empty.chreqbody(["title", "src"], req)) res.send( { succ: -10 } );
+        var source = new Source();      // create a new instance of the Source model
+        source.title = req.body.title;  // set the sources name (comes from the request)
+		source.src = req.body.src;
+		source.type = req.body.type;
 
-		//res.json({ message: 'bear name received!' });
-        // save the bear and check for errors
-		
-        bear.save(function(err) {
+        source.save(function(err) {
             if (err)
                 res.send(err);
 
-            res.json({ message: 'Bear created!' });
+            res.json({ succ:0, msg: 'Source created!' });
         });
         
     })
 
-// get all the bears (accessed at GET http://localhost:8080/api/bears)
+// get all the sources (accessed at GET http://localhost:8080/api/sources)
     .get(function(req, res) {
-        Bear.find(function(err, bears) {
+        Source.find(function(err, sources) {
             if (err)
                 res.send(err);
 
-            res.json(bears);
+            res.json(sources);
         });
     });
 
-// on routes that end in /bears/:bear_id
+// on routes that end in /sources/:source_id
 // ----------------------------------------------------
-router.route('/bears/:bear_id')
+router.route('/sources/:source_id')
 
-    // get the bear with that id (accessed at GET http://localhost:8080/api/bears/:bear_id)
+    // get the source with that id (accessed at GET http://localhost:8080/api/sources/:source_id)
     .get(function(req, res) {
-        Bear.findById(req.params.bear_id, function(err, bear) {
+        Source.findById(req.params.source_id, function(err, source) {
             if (err)
                 res.send(err);
-            res.json(bear);
+            res.json(source);
         });
     })
 
-    // update the bear with this id (accessed at PUT http://localhost:8080/api/bears/:bear_id)
+    // update the source with this id (accessed at PUT http://localhost:8080/api/sources/:source_id)
     .put(function(req, res) {
 
-        // use our bear model to find the bear we want
-        Bear.findById(req.params.bear_id, function(err, bear) {
+		if(empty.chreqbody(["title", "src"], req)) res.send( { succ: -10 } );
+        // use our source model to find the source we want
+        Source.findById(req.params.source_id, function(err, source) {
 
             if (err)
                 res.send(err);
 
-            bear.name = req.body.name;  // update the bears info
+            source.title = req.body.title;  // update the sources info
+			source.src = req.body.src;
+			source.type = req.body.type;
 
-            // save the bear
-            bear.save(function(err) {
+            // save the source
+            source.save(function(err) {
                 if (err)
                     res.send(err);
 
-                res.json({ message: 'Bear updated!' });
+                res.json({ succ: 0, msg: 'Source updated!' });
             });
 
         });
     })
 
-// delete the bear with this id (accessed at DELETE http://localhost:8080/api/bears/:bear_id)
+// delete the source with this id (accessed at DELETE http://localhost:8080/api/sources/:source_id)
     .delete(function(req, res) {
-        Bear.remove({
-            _id: req.params.bear_id
-        }, function(err, bear) {
+        Source.remove({
+            _id: req.params.source_id
+        }, function(err, source) {
             if (err)
                 res.send(err);
 
-            res.json({ message: 'Successfully deleted' });
+            res.json({ succ: 0, msg: 'Successfully deleted' });
         });
     });
 
