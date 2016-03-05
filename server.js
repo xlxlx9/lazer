@@ -21,9 +21,9 @@ mongoose.connection.on('error', function (err) {
 	console.log("mongoose connection err!" + err);
 });
 
-
 var empty = require("./app/util/empty");
 var Source = require('./app/models/source');
+var Channel = require('./app/models/channel');
 
 var port = process.env.PORT || 8080;        // set our port
 
@@ -126,6 +126,90 @@ router.route('/sources/:source_id')
         });
     });
 
+router.route("/channels")
+	  .post(function(req, res) { // create a new channel
+			  if(empty.chreqbody(["title"], req)) res.send({ succ: -9 });
+			  var channel = new Channel();
+			  channel.title = req.body.title;
+			  channel.rank = req.body.rank;
+			  channel.sources = req.body.sources || [];
+
+			  channel.save(function(err) {
+				  if(err) res.send(err);
+				  res.send({ succ: 0, msg: "Channel created! " });
+			  });
+		})
+	  .get(function(req, res) { // list all channel
+			  Channel.find(function(err, channels) {
+				  if(err) res.send(err);
+				  res.send({ succ: 0, channels: channels });
+			  });
+	  })
+	  ;
+router.route("/channels/:channel_id")
+	  .get(function(req, res) { // find a channel by id
+		  Channel.findById(req.params.channel_id, function(err, channel) {
+			if(err) res.send(err);
+			res.send(channel);
+		  });
+	  })
+	  .put(function(req, res) {
+	  	  if(empty.chreqbody(["title"], req)) res.send({ succ: -9 });
+		  Channel.findById(req.params.channel_id, function(err, channel) {
+			if(err) res.send(err);
+			channel.title = req.body.title;
+			channel.rank = req.body.rank;
+			channel.sources = req.body.sources || [];
+			channel.save(function(err) {
+				if(err) res.send(err);
+				res.send({ succ: 0, msg: "Channel updated" });
+			});
+		  });
+	  })
+	  .delete(function(req,res) {
+		  Channel.remove({ _id: req.params.channel_id }, function(err, channel) {
+			if(err) res.send(err);
+			res.send({ succ: 0, msg: "Channel deleted! " });
+		  });
+	  })
+	  ;
+
+router.route("/channels/:channel_id/:source_id")
+	  .put(function(req, res) {
+		  Channel.findById(req.params.channel_id, function(err, channel) {
+			if(err) res.send(err);
+			Source.findById(req.params.source_id, function(e2, source) {
+				if(err) res.send(e2);
+				for(var i in channel.sources) {
+					if(channel.sources[i] == req.params.source_id) res.send({ succ: -20 }); // duplica
+				}
+				channel.sources.push(req.params.source_id);
+				channel.save(function(e3) {
+					if(err) res.send(e3);
+					res.send({ succ: 0, msg: "Source added to channel" });
+				});
+			});
+		  });
+	  })
+	  .delete(function(req, res) {
+		  Channel.findById(req.params.channel_id, function(err, channel) {
+			if(err) res.send(err);
+			Source.findById(req.params.source_id, function(e2, source) {
+				if(err) res.send(e2);
+				for(var i in channel.sources) {
+					if(channel.sources[i] == req.params.source_id) {
+						channel.sources.splice(i, 1);
+						channel.save(function(e3) {
+							if(err) res.send(e3);
+							res.send({ succ: 0, msg: "Source deleted to channel" });
+						});
+					}
+				}
+				res.send({ succ: -30 }); // source not in this channel
+			});
+		  });
+		  
+	  });
 // REGISTER OUR ROUTES -------------------------------
 
 // all of our routes will be prefixed with /api

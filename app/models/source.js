@@ -3,12 +3,12 @@
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
-var BearSchema   = new Schema({
+var SourceSchema   = new Schema({
      title: String
 	,type: { type: String, default: "rss" }
 	,src: String
 	,since: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Source', BearSchema);
+module.exports = mongoose.model('Source', SourceSchema);
 
