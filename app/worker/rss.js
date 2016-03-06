@@ -80,7 +80,7 @@ Reader.prototype.digest = function(chunk, source) {
 				if(null != current) current = null;
 			}
 			if(null == current) {
-				//console.info("Existing item NOT found for title = %s, source = %s", title, source.title);
+				console.info("New item arrived: title = %s, source = %s", title, source.title);
 				current = new Item();
 			} else {
 				//console.log("Existing item found for title = %s, source = %s", title, source.title);
@@ -96,7 +96,7 @@ Reader.prototype.digest = function(chunk, source) {
 					console.warn("Failed to save item, title = %s, source = %s", title, source.title);
 					rec.total --;
 				} else {
-					console.log("item saved: title = %s, url = %s", current.title, current.link);
+					//console.log("item saved: title = %s, url = %s", current.title, current.link);
 					rec.cnt++;
 					if(!(current._id in rec.map)) {
 						source.recent.unshift(current._id);
@@ -120,7 +120,6 @@ Reader.prototype.digest = function(chunk, source) {
 		};
 		var it = items[rec.idx];
 		var title = _this.guess(["title"], it);
-		console.log("trying to locate item: title = %s", title);
 		Item.findOne({ title: title, source: source._id }, upon_find);
 	});
 }
