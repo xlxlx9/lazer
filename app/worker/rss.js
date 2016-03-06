@@ -6,7 +6,27 @@ Reader.prototype.require = function(src) {
 	return require("http");
 }
 
-Reader.prototype.guess(list, obj) {
+Reader.prototype.locate = function(obj, path) {
+	if(null == path || 1 > path.length) return obj;
+	var sec = path.split("/");
+	var t = obj;
+	for(var i = 0; i < sec.length; i++) {
+		if(null == t) return t;
+		var key = sec[i];
+		if(1 > key.length) continue;
+		if(!t.hasOwnProperty(key)) {
+			console.log("path seeking stops @ %s for type %s", key, typeof t);
+			return null;
+		}
+		t = t[key];
+		if(Array.isArray(t) && (1 == t.length) && (i != sec.length - 1)) { // do not scrape [] at the end
+			t = t[0];
+		}
+	}
+	return t;
+}
+
+Reader.prototype.guess = function(list, obj) {
 	if(null == list || 1 > list.length) return;
 	for(var i in list) {
 		if(obj.hasOwnProperty(list[i])) return obj[list[i]];
@@ -15,16 +35,23 @@ Reader.prototype.guess(list, obj) {
 }
 
 Reader.prototype.digest = function(chunk, source) {
+	var _this = this;
 	require('xml2js').parseString(chunk, function(err, result) {
 		if(err) {
 			console.log("Parsing error for %s: %s", source.title, source.src);
+			console.error(err);
 			return;
 		}
-		var attrs = [];
-		for(var k in result) {
-			attrs.push(k);
+		var items = _this.locate(result, "rss/channel/item");
+		if(null == items) items = _this.locate(result, "feed/entry");
+		if(null == items) {
+	   		items = _this.locate(result, "rdf:RDF/item");
 		}
-		console.log("attributes from %s's xml: %s", source.title, attrs.join());
+		if(null == items) {
+			console.log("No items was found for source %s - %s", source.title, source.src);
+			return;
+		}
+		console.log("Got %d items", items.length);
 	});
 }
 

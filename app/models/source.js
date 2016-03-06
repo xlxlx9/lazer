@@ -9,6 +9,7 @@ var SourceSchema   = new Schema({
 	,src: String
 	,recent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item' }]
 	,since: { type: Date, default: Date.now }
+	,icon: { type: String, default: ""}
 });
 
 module.exports = mongoose.model('Source', SourceSchema);

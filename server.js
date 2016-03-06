@@ -65,6 +65,7 @@ router.route('/sources')
         source.title = req.body.title;  // set the sources name (comes from the request)
 		source.src = req.body.src;
 		source.type = req.body.type;
+		source.icon = req.body.icon;
 
         source.save(function(err) {
             if (err)
@@ -111,6 +112,7 @@ router.route('/sources/:source_id')
             source.title = req.body.title;  // update the sources info
 			source.src = req.body.src;
 			source.type = req.body.type;
+			source.icon = req.body.icon;
 
             // save the source
             source.save(function(err) {
@@ -156,20 +158,21 @@ router.route("/channels")
 	  })
 	  ;
 router.route("/channels/:channel_id")
+	  /*
 	  .get(function(req, res) { // find a channel by id
 		  Channel.findById(req.params.channel_id, function(err, channel) {
 			if(err) res.send(err);
 			res.send(channel);
 		  });
-	  })
-	  /*  // test populate
+	  }) */
+	    // test populate
 	  .get(function(req, res) { // find a channel by id
 		  Channel.findById(req.params.channel_id).populate("sources").exec(function(err, channel) {
 			if(err) res.send(err);
 			res.send(channel);
 		  });
 	  })
-	  */
+	  
 	  .put(function(req, res) {
 	  	  if(empty.chreqbody(["title"], req)) res.send({ succ: -9 });
 		  Channel.findById(req.params.channel_id, function(err, channel) {
@@ -199,6 +202,7 @@ router.route("/channels/:channel_id/:source_id")
 				if(err) res.send(e2);
 				for(var i in channel.sources) {
 					if(channel.sources[i] == req.params.source_id) res.send({ succ: -20 }); // duplica
+					return;
 				}
 				channel.sources.push(req.params.source_id);
 				channel.save(function(e3) {
@@ -211,19 +215,17 @@ router.route("/channels/:channel_id/:source_id")
 	  .delete(function(req, res) {
 		  Channel.findById(req.params.channel_id, function(err, channel) {
 			if(err) res.send(err);
-			Source.findById(req.params.source_id, function(e2, source) {
-				if(err) res.send(e2);
-				for(var i in channel.sources) {
-					if(channel.sources[i] == req.params.source_id) {
-						channel.sources.splice(i, 1);
-						channel.save(function(e3) {
-							if(err) res.send(e3);
-							res.send({ succ: 0, msg: "Source deleted to channel" });
-						});
-					}
+			for(var i in channel.sources) {
+				if(channel.sources[i] == req.params.source_id) {
+					channel.sources.splice(i, 1);
+					channel.save(function(e3) {
+						if(err) res.send(e3);
+						res.send({ succ: 0, msg: "Source deleted to channel" });
+					});
+					return;
 				}
-				res.send({ succ: -30 }); // source not in this channel
-			});
+			}
+			res.send({ succ: -30 }); // source not in this channel
 		  });
 		  
 	  });
