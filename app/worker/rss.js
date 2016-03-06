@@ -79,6 +79,7 @@ Reader.prototype.digest = function(chunk, source) {
 				_this.assemble(unified, "description", ["description", "content"], it);
 				_this.assemble(unified, "date", ["pubDate", "dc:date", "updated"], it);
 				_this.assemble(unified, "title", ["title"], it);
+				unified.source = source._id;
 				unified.save(function(err) {
 					if(err) {
 						console.warn("Failed to save item, title = %s, source = %s", title, source.title);
