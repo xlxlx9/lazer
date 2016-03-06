@@ -142,17 +142,26 @@ router.route('/sources/:source_id')
 router.route("/channels")
 	  .post(function(req, res) { // create a new channel
 			  if(empty.chreqbody(["title"], req)) {
-				res.send({ succ: -9 });
+				res.send({ succ: -9, msg:"empty title!" });
 			  	return;
 			  }
-			  var channel = new Channel();
-			  channel.title = req.body.title;
-			  channel.rank = req.body.rank;
-			  channel.sources = req.body.sources || [];
+			  Channel.findOne({ title: req.body.title }, function(e0, doc) {
+				  if(e0) {
+				  	console.log("Unable to test title uniquness for %s", req.body.title);
+					res.send(e0);
+				  } else if(null != doc) {
+				  	res.send({ succ: -5, msg: "Duplicated channel title" });
+				  } else {
+					  var channel = new Channel();
+					  channel.title = req.body.title;
+					  channel.rank = req.body.rank;
+					  channel.sources = req.body.sources || [];
 
-			  channel.save(function(err) {
-				  if(err) res.send(err);
-				  res.send({ succ: 0, msg: "Channel created! " });
+					  channel.save(function(err) {
+						  if(err) res.send(err);
+						  res.send({ succ: 0, msg: "Channel created! " });
+					  });
+				  }
 			  });
 		})
 	  .get(function(req, res) { // list all channel
@@ -220,9 +229,9 @@ router.route("/channels/:channel_id/:source_id")
 		  });
 	  })
 	  .delete(function(req, res) {
-		  Channel.findById(req.params.channel_id, function(err) {
+		  Channel.findById(req.params.channel_id, function(err, channel) {
 			if(err) res.send(err);
-			for(var i in channel.sources) {
+			for(var i = 0; i < channel.sources.length; i++) {
 				if(channel.sources[i] == req.params.source_id) {
 					channel.sources.splice(i, 1);
 					channel.save(function(e3) {
