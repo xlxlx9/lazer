@@ -74,7 +74,7 @@ Reader.prototype.digest = function(chunk, source) {
 		var upon_find = function(err, current) {
 			var it = items[rec.idx];
 			var title = _this.guess(["title"], it);
-			console.log("current item find result, title = %s", title);
+			//console.log("current item find result, title = %s", title);
 			if(err) {
 				console.warn("findOne failed for title = %s, source = %s", title, source.title);
 				if(null != current) current = null;

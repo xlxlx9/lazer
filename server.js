@@ -141,7 +141,10 @@ router.route('/sources/:source_id')
 
 router.route("/channels")
 	  .post(function(req, res) { // create a new channel
-			  if(empty.chreqbody(["title"], req)) res.send({ succ: -9 });
+			  if(empty.chreqbody(["title"], req)) {
+				res.send({ succ: -9 });
+			  	return;
+			  }
 			  var channel = new Channel();
 			  channel.title = req.body.title;
 			  channel.rank = req.body.rank;
@@ -203,8 +206,10 @@ router.route("/channels/:channel_id/:source_id")
 			Source.findById(req.params.source_id, function(e2, source) {
 				if(err) res.send(e2);
 				for(var i in channel.sources) {
-					if(channel.sources[i] == req.params.source_id) res.send({ succ: -20 }); // duplica
-					return;
+					if(channel.sources[i] == req.params.source_id) {
+						res.send({ succ: -20 }); // duplica
+						return;
+					}
 				}
 				channel.sources.push(req.params.source_id);
 				channel.save(function(e3) {
@@ -243,10 +248,37 @@ router.route("/items")
 		  if(empty.chreqquery(["source"], req)) res.send({ succ: -40, msg:"Specify source by id, please" });
 		  Item.remove({ source: req.query.source }, function(err) {
 			  if(err) res.send(err);
-			  res.send({ succ: 0, msg:"items for " + req.query.source + " cleared" }); 
+			  Source.findById(req.query.source, function(err, source) {
+				  if(err || null == source) {
+			  		res.send({ succ: -51, msg:"items cleared, but failed to locate in sources: " + req.query.source }); 
+				  } else {
+				  	source.recent = [];
+					source.save(function(e2) {
+						if(e2) res.send({ succ: -55, msg:"failed to reset recent items for: " + source.title });
+						res.send({ succ: 0, msg:"items cleared for " + source.title });
+					});
+				  }
+			  });
 		  });
 	  })
 	  ;
+router.route("/digests/:uid")
+	.post(function(req, res) {
+		var channels = req.body.channels;
+		if(null == channels || 1 > channels.length) {
+			res.send({ succ: -80, msg:"Empty subscription" });
+		}
+		Channel.find({ "_id": { $in: channels } })
+			   .populate({ path:"sources", populate: { path:"recent", model:Item} })
+			   .exec(function(err, docs) {
+				   	if(err) res.send(err);
+					console.log("Found channels in total: %d", docs.length);
+					var items = require("./app/util/pick").pick(docs, 10 * 60);
+					res.send({ succ: 0, items: items });
+				});
+	})
+	;
+
 // REGISTER OUR ROUTES -------------------------------
 
 // all of our routes will be prefixed with /api
