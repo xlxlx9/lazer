@@ -140,7 +140,16 @@ Reader.prototype.revisit = function(gl) {
 			console.error(err);
 			return;
 		}
-		var callback = function(res) {
+		var issue_request = function() {
+			var si = sources[idx];
+			try {
+				_this.require(si.src).get(si.src, on_response).on('error', on_error);
+			} catch (e) {
+				console.log("Passing error to request error handler");
+				on_error(e);
+			}
+		}
+		var on_response = function(res) {
 			console.log("Got one response from %s", sources[idx].src);
 			res.on("data", function(chunk) {
 				data += chunk;
@@ -153,8 +162,7 @@ Reader.prototype.revisit = function(gl) {
 					gl.reading = false; // completed
 					console.log("Finished for this round");
 				} else {
-					var si = sources[idx];
-					_this.require(si.src).get(si.src, callback).on('error', on_error);
+					issue_request();
 				}
 			});
 		};
@@ -171,12 +179,10 @@ Reader.prototype.revisit = function(gl) {
 				console.log("Finished for this round");
 			} else {
 				data = "";// clear for new request
-				var si = sources[idx];
-				_this.require(si.src).get(si.src, callback).on('error', on_error);
+				issue_request();
 			}
 		};
-		var si = sources[idx];
-		_this.require(si.src).get(si.src, callback).on('error', on_error);
+		issue_request();
 	});
 }
 
