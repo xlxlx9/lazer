@@ -29,7 +29,7 @@ var rss = require("./app/worker/rss");
 
 var port = process.env.PORT || 8080;        // set our port
 var gl = { rss: {} };
-rss.revisit(gl.rss);
+//rss.revisit(gl.rss);
 
 var minutes = 10;
 setInterval(function() {
@@ -262,7 +262,18 @@ router.route("/items")
 		  });
 	  })
 	  ;
-router.route("/digests/:uid")
+router.route("/subscriptions")
+	  .get(function(req, res) {
+		  Channel.find({}, { title: true, rank: true }, function(err, docs) {
+			  if(err) {
+			  	res.send(err);
+			  } else {
+			  	res.send({ succ: 0, channels: docs });
+			  }
+		  });
+	  });
+
+router.route("/subscriptions/:uid")
 	.post(function(req, res) {
 		var channels = req.body.channels;
 		if(null == channels || 1 > channels.length) {
