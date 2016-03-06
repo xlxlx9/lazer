@@ -15,7 +15,7 @@ Picker.prototype.pick = function(docs, seconds) {
 			console.info("adding item from source: %s - %s", srcj.title, srcj._id);
 			for(var k = 0; k < srcj.recent.length; k++) {
 				var itemk = srcj.recent[k];
-				itemk.icon = srcj.icon; // adding icon
+				itemk.icon = srcj.icon; // TODO: adding icon, but not working, because Mongo Model does not include icon. 
 				item_list.push(itemk);
 			}
 		}
