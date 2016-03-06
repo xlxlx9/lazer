@@ -15,7 +15,7 @@ Reader.prototype.locate = function(obj, path) {
 		var key = sec[i];
 		if(1 > key.length) continue;
 		if(!t.hasOwnProperty(key)) {
-			console.log("path seeking stops @ %s for type %s", key, typeof t);
+			console.info("path seeking stops @ %s for type %s", key, typeof t);
 			return null;
 		}
 		t = t[key];
@@ -32,6 +32,17 @@ Reader.prototype.guess = function(list, obj) {
 		if(obj.hasOwnProperty(list[i])) return obj[list[i]];
 	}
 	return null;
+}
+
+Reader.prototype.assemble = function(target, attr, guessList, source, warning) {
+	if("undefined" == typeof warning) warning = true;
+	if(null == target || null == source) return;
+	if(null == attr || null == guessList || 1 > guessList.length) return;
+	var value = this.guess(guessList, source);
+	if((null == value) && warning) {
+		console.warn("Attribute %s NOT found within [%s]", attr, guessList.join());
+	}
+	target[attr] = value;
 }
 
 Reader.prototype.digest = function(chunk, source) {
@@ -52,6 +63,29 @@ Reader.prototype.digest = function(chunk, source) {
 			return;
 		}
 		console.log("Got %d items", items.length);
+		var Item = require("../models/item");
+		for(var i in items) {
+			var it = items[i];
+			var title = _this.guess(["title"], it);
+			Item.findOne({ title: title, source: source._id }, function(err, unified) {
+				if(err) {
+					console.warn("findOne failed for title = %s, source = %s", title, source.title);
+					if(null != unified) unified = null;
+				}
+			 	unified = unified || new Item();
+
+				_this.assemble(unified, "author", ["author", "dc:creator"], it, false);
+				_this.assemble(unified, "link", ["link"], it);
+				_this.assemble(unified, "description", ["description", "content"], it);
+				_this.assemble(unified, "date", ["pubDate", "dc:date", "updated"], it);
+				_this.assemble(unified, "title", ["title"], it);
+				unified.save(function(err) {
+					if(err) {
+						console.warn("Failed to save item, title = %s, source = %s", title, source.title);
+					}
+				});
+			});
+		}
 	});
 }
 
