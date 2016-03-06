@@ -239,6 +239,13 @@ router.route("/items")
 			  res.send({ succ: 0, items: items, source: req.params.source });
 		  });
 	  })
+	  .delete(function(req, res) {
+		  if(empty.chreqquery(["source"], req)) res.send({ succ: -40, msg:"Specify source by id, please" });
+		  Item.remove({ source: req.query.source }, function(err) {
+			  if(err) res.send(err);
+			  res.send({ succ: 0, msg:"items for " + req.query.source + " cleared" }); 
+		  });
+	  })
 	  ;
 // REGISTER OUR ROUTES -------------------------------
 

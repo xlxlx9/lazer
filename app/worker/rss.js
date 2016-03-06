@@ -63,59 +63,65 @@ Reader.prototype.digest = function(chunk, source) {
 			console.log("No items was found for source %s - %s", source.title, source.src);
 			return;
 		}
-		console.log("Got %d items", items.length);
+		console.log("Got %d items for %s", items.length, source._id);
 		var Item = require("../models/item");
-		var rec = { cnt: 0, total: items.length, map: {}};
+		var rec = { cnt: 0, total: items.length, map: {}, idx: 0};
 		if(null != source.recent && 0 < source.recent.length) {
 			for(var j in source.recent) {
 				rec.map[source.recent[j]] = 1;
 			}
 		}
-		for(var i in items) {
-			var it = items[i];
+		var upon_find = function(err, current) {
+			var it = items[rec.idx];
 			var title = _this.guess(["title"], it);
-			Item.findOne({ title: title, source: source._id }, function(err, unified) {
+			console.log("current item find result, title = %s", title);
+			if(err) {
+				console.warn("findOne failed for title = %s, source = %s", title, source.title);
+				if(null != current) current = null;
+			}
+			if(null == current) {
+				//console.info("Existing item NOT found for title = %s, source = %s", title, source.title);
+				current = new Item();
+			} else {
+				//console.log("Existing item found for title = %s, source = %s", title, source.title);
+			}
+			_this.assemble(current, "author", ["author", "dc:creator"], it, false);
+			_this.assemble(current, "link", ["link"], it);
+			_this.assemble(current, "description", ["description", "content"], it);
+			_this.assemble(current, "date", ["pubDate", "dc:date", "updated"], it);
+			_this.assemble(current, "title", ["title"], it);
+			current.source = source._id;
+			current.save(function(err) {
 				if(err) {
-					console.warn("findOne failed for title = %s, source = %s", title, source.title);
-					if(null != unified) unified = null;
-				}
-				if(null == unified) {
-					console.info("Existing item NOT found for title = %s, source = %s", title, source.title);
-				}
-			 	unified = unified || new Item();
-
-				_this.assemble(unified, "author", ["author", "dc:creator"], it, false);
-				_this.assemble(unified, "link", ["link"], it);
-				_this.assemble(unified, "description", ["description", "content"], it);
-				_this.assemble(unified, "date", ["pubDate", "dc:date", "updated"], it);
-				_this.assemble(unified, "title", ["title"], it);
-				unified.source = source._id;
-				unified.save(function(err) {
-					if(err) {
-						console.warn("Failed to save item, title = %s, source = %s", title, source.title);
-						rec.total --;
-					} else {
-						rec.cnt++;
-						if(unified._id in rec.map) {
-							var idx = source.recent.indexOf(unified._id);
-							if(0 <= idx && idx <= source.recent.length) {
-								source.recent.splice(idx, 1);
-							} else {
-								console.log("Failed to locate %s in %s's recent items", unified.title, source.title);
-							}
-						}
-						source.recent.unshift(unified._id);
+					console.warn("Failed to save item, title = %s, source = %s", title, source.title);
+					rec.total --;
+				} else {
+					console.log("item saved: title = %s, url = %s", current.title, current.link);
+					rec.cnt++;
+					if(!(current._id in rec.map)) {
+						source.recent.unshift(current._id);
 					}
-					if(rec.cnt < rec.total) return;
+				}
+				rec.idx++;
+				if(rec.idx < items.length) {
+					var next = items[rec.idx];
+					var next_title = _this.guess(["title"], next);
+					Item.findOne({ title: next_title, source: source._id }, upon_find);
+				} else {
 					if(source.recent.length > _this.max_recent) { // trim
 						source.recent.splice(_this.max_recent, source.recent.length - _this.max_recent);
 					}
 					source.save(function(err) {
 						if(err) console.warn("Failed to flush recent items for %s", source.title);
+						console.log("recent items for %s saved. ", source.title);
 					});
-				});
+				}
 			});
-		}
+		};
+		var it = items[rec.idx];
+		var title = _this.guess(["title"], it);
+		console.log("trying to locate item: title = %s", title);
+		Item.findOne({ title: title, source: source._id }, upon_find);
 	});
 }
 
