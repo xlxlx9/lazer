@@ -22,7 +22,7 @@ mongoose.connection.on('error', function (err) {
 });
 
 var empty = require("./app/util/empty");
-//var Item = require('./app/models/item');
+var Item = require('./app/models/item');
 var Source = require('./app/models/source');
 var Channel = require('./app/models/channel');
 var rss = require("./app/worker/rss");
@@ -129,11 +129,13 @@ router.route('/sources/:source_id')
     .delete(function(req, res) {
         Source.remove({
             _id: req.params.source_id
-        }, function(err, source) {
-            if (err)
+        }, function(err) {
+            if(err)
                 res.send(err);
-
-            res.json({ succ: 0, msg: 'Successfully deleted' });
+			Item.remove({ source: req.params.source_id }, function(e2) {
+				if(e2) res.send(e2);
+				res.json({ succ: 0, msg: 'Successfully deleted' });
+			});
         });
     });
 
@@ -213,7 +215,7 @@ router.route("/channels/:channel_id/:source_id")
 		  });
 	  })
 	  .delete(function(req, res) {
-		  Channel.findById(req.params.channel_id, function(err, channel) {
+		  Channel.findById(req.params.channel_id, function(err) {
 			if(err) res.send(err);
 			for(var i in channel.sources) {
 				if(channel.sources[i] == req.params.source_id) {
@@ -229,6 +231,15 @@ router.route("/channels/:channel_id/:source_id")
 		  });
 		  
 	  });
+router.route("/items")
+	  .get(function(req,res) {
+		  if(empty.chreqquery(["source"], req)) res.send({ succ: -40, msg:"Specify source by id, please" });
+		  Item.find({ source: req.query.source }).limit(100).exec(function(err, items) {
+			  if(err) res.send(err);
+			  res.send({ succ: 0, items: items, source: req.params.source });
+		  });
+	  })
+	  ;
 // REGISTER OUR ROUTES -------------------------------
 
 // all of our routes will be prefixed with /api

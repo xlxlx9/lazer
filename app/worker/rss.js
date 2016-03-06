@@ -1,4 +1,5 @@
 var Reader = function() {
+	this.max_recent = 12;
 }
 
 Reader.prototype.require = function(src) {
@@ -58,12 +59,18 @@ Reader.prototype.digest = function(chunk, source) {
 		if(null == items) {
 	   		items = _this.locate(result, "rdf:RDF/item");
 		}
-		if(null == items) {
+		if((null == items) || (!Array.isArray(items))) {
 			console.log("No items was found for source %s - %s", source.title, source.src);
 			return;
 		}
 		console.log("Got %d items", items.length);
 		var Item = require("../models/item");
+		var rec = { cnt: 0, total: items.length, map: {}};
+		if(null != source.recent && 0 < source.recent.length) {
+			for(var j in source.recent) {
+				rec.map[source.recent[j]] = 1;
+			}
+		}
 		for(var i in items) {
 			var it = items[i];
 			var title = _this.guess(["title"], it);
@@ -71,6 +78,9 @@ Reader.prototype.digest = function(chunk, source) {
 				if(err) {
 					console.warn("findOne failed for title = %s, source = %s", title, source.title);
 					if(null != unified) unified = null;
+				}
+				if(null == unified) {
+					console.info("Existing item NOT found for title = %s, source = %s", title, source.title);
 				}
 			 	unified = unified || new Item();
 
@@ -83,7 +93,26 @@ Reader.prototype.digest = function(chunk, source) {
 				unified.save(function(err) {
 					if(err) {
 						console.warn("Failed to save item, title = %s, source = %s", title, source.title);
+						rec.total --;
+					} else {
+						rec.cnt++;
+						if(unified._id in rec.map) {
+							var idx = source.recent.indexOf(unified._id);
+							if(0 <= idx && idx <= source.recent.length) {
+								source.recent.splice(idx, 1);
+							} else {
+								console.log("Failed to locate %s in %s's recent items", unified.title, source.title);
+							}
+						}
+						source.recent.unshift(unified._id);
 					}
+					if(rec.cnt < rec.total) return;
+					if(source.recent.length > _this.max_recent) { // trim
+						source.recent.splice(_this.max_recent, source.recent.length - _this.max_recent);
+					}
+					source.save(function(err) {
+						if(err) console.warn("Failed to flush recent items for %s", source.title);
+					});
 				});
 			});
 		}
