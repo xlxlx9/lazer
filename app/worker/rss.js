@@ -80,7 +80,8 @@ Reader.prototype.digest = function(chunk, source) {
 				if(null != current) current = null;
 			}
 			if(null == current) {
-				console.info("New item arrived: title = %s, source = %s", title, source.title);
+                var gc = require("chalk").bold.green;
+				console.info(gc("New item arrived: title = %s, source = %s"), title, source.title);
 				current = new Item();
 			} else {
 				//console.log("Existing item found for title = %s, source = %s", title, source.title);
