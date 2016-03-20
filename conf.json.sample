@@ -1,0 +1,4 @@
+{
+    "port": 8080
+    "database": "mongodb://blazer:n0t_a_Doctor@127.0.0.1:27017/blazer"
+}
