@@ -10,13 +10,21 @@ var bodyParser = require('body-parser');
 
 var mongoose   = require('mongoose');
 
+var nconf = require("nconf");
+nconf.argv().env();
+var cfg_name = nconf.get("conf") || "conf.json";
+nconf.file({ "file": cfg_name });
+nconf.defaults({
+	  "port": 8080
+	, "database": "mongodb://blazer:n0t_a_Doctor@127.0.0.1:27017/blazer"
+});
+
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-//mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
-mongoose.connect("mongodb://blazer:n0t_a_Doctor@ds023458.mlab.com:23458/blazer");
+mongoose.connect(nconf.get("database"));
 mongoose.connection.on('error', function (err) {
 	console.log("mongoose connection err!" + err);
 });
@@ -27,7 +35,7 @@ var Source = require('./app/models/source');
 var Channel = require('./app/models/channel');
 var rss = require("./app/worker/rss");
 
-var port = process.env.PORT || 8080;        // set our port
+var port = nconf.get("port");
 var gl = { rss: {} };
 //rss.revisit(gl.rss);
 
