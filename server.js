@@ -26,6 +26,7 @@ var Item = require('./app/models/item');
 var Source = require('./app/models/source');
 var Channel = require('./app/models/channel');
 var rss = require("./app/worker/rss");
+var chalk = require("chalk");
 
 var port = process.env.PORT || 8080;        // set our port
 var gl = { rss: {} };
@@ -307,5 +308,5 @@ app.use('/api', router);
 // START THE SERVER
 // =============================================================================
 app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log(chalk.yellow('Magic happens on port %d'), port);
 
