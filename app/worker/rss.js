@@ -46,7 +46,34 @@ Reader.prototype.assemble = function(target, attr, guessList, source, warning) {
 	target[attr] = value;
 }
 
-Reader.prototype.digest = function(chunk, source) {
+Reader.prototype.store = function(data, source) {
+	var _this = this;
+	if(data == source.latest) {
+		console.log("No changes for source [%s] - [%s], aborting...", source.title, source.id);
+		return;
+	}
+	source.latest = data;
+	source.save(function(err) {
+		if(err) {
+			console.warn("Failed to save latest content for %s, but OK to proceed...", source.title);
+		}
+
+		var Feed = require("../models/feed");
+		var fd = new Feed();
+		fd.source = source.id;
+		fd.text = data;
+		fd.save(function(err, feed) {
+			if(err) {
+				console.warn("Failed to save feed for %s", source.title);
+			} else {
+				console.log("Pass to digest %s...", source.title);
+				_this.digest(data, source, feed);
+			}
+		});
+	});
+}
+
+Reader.prototype.digest = function(chunk, source, feed) {
 	var _this = this;
 	require('xml2js').parseString(chunk, function(err, result) {
 		if(err) {
@@ -156,7 +183,7 @@ Reader.prototype.revisit = function(gl) {
 				data += chunk;
 			});
 			res.on("end", function() {
-				_this.digest(data, sources[idx]);
+				_this.store(data, sources[idx]);
 				data = "";  // clear for new request
 				idx ++;
 				if(idx >= sources.length) {

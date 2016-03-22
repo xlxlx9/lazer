@@ -38,7 +38,13 @@ var chalk = require("chalk");
 
 var port = nconf.get("port");
 var gl = { rss: {} };
-//rss.revisit(gl.rss);
+
+if(nconf.get("hurry")) {
+	console.log(chalk.blue("Start scraping in 5 sec! "));
+	setTimeout(function() {
+		rss.revisit(gl.rss);
+	}, 5 * 1000);
+}
 
 var minutes = 10;
 setInterval(function() {
