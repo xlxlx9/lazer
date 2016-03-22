@@ -40,10 +40,11 @@ var port = nconf.get("port");
 var gl = { rss: {} };
 
 if(nconf.get("hurry")) {
-	console.log(chalk.blue("Start scraping in 5 sec! "));
+	var tmt = 5;
+	console.log(chalk.blue("Start scraping in %d seconds! "), tmt);
 	setTimeout(function() {
 		rss.revisit(gl.rss);
-	}, 5 * 1000);
+	}, tmt * 1000);
 }
 
 var minutes = 10;

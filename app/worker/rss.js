@@ -67,15 +67,15 @@ Reader.prototype.store = function(data, source) {
 				console.warn("Failed to save feed for %s", source.title);
 			} else {
 				console.log("Pass to digest %s...", source.title);
-				_this.digest(data, source, feed);
+				_this.digest(source, feed);
 			}
 		});
 	});
 }
 
-Reader.prototype.digest = function(chunk, source, feed) {
+Reader.prototype.digest = function(source, feed) {
 	var _this = this;
-	require('xml2js').parseString(chunk, function(err, result) {
+	require('xml2js').parseString(feed.text, function(err, result) {
 		if(err) {
 			console.log("Parsing error for %s: %s", source.title, source.src);
 			console.error(err);
