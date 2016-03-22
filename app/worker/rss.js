@@ -16,7 +16,7 @@ Reader.prototype.locate = function(obj, path) {
 		var key = sec[i];
 		if(1 > key.length) continue;
 		if(!t.hasOwnProperty(key)) {
-			console.info("path seeking stops @ %s for type %s", key, typeof t);
+			//console.info("path seeking stops @ %s for type %s", key, typeof t);
 			return null;
 		}
 		t = t[key];
@@ -73,6 +73,50 @@ Reader.prototype.store = function(data, source) {
 	});
 }
 
+Reader.prototype.pick_node = function(obj, fields, tags, title) {
+	for(var i = 0; i < fields.length; i++) {
+		var fd = fields[i];
+		if(!obj.hasOwnProperty(fd)) continue;
+		var val = obj[fd];
+		if(Array.isArray(val)) val = val[0];
+		if(null == val || 0 == val.length) continue;
+		if(val.hasOwnProperty("_")) val = val["_"]; // node with attributes
+		if(!val.hasOwnProperty("indexOf")) {
+			//console.log("String meothd indexof NOT present:\n %s", title);
+			//console.log(val);
+			continue;
+		}
+		for(var j = 0; j < tags.length; j++) {
+			var tn = tags[j];
+			var start = val.indexOf("<" + tn);
+			if(-1 == start) {
+				start = val.indexOf("&lt;" + tn);
+			}
+			if(-1 == start) {
+				console.log("Tag [%s] not found in %s", tn, val);
+			   	continue; // tag start not found:(
+			}
+			var end = val.indexOf("/>", start);
+			var off = 2;
+			if(-1 == end) {
+				end = val.indexOf("/&gt;", start);
+				off = 5;
+			}
+			if(-1 == end) continue; // end not found:(
+			return val.substring(start, end + off);
+		}
+	}
+	return null;
+}
+
+Reader.prototype.pick_between = function(str, start, end) {
+	var lower = str.indexOf(start);
+	if(-1 == lower) return null;
+	var upper = str.indexOf(end, lower);
+	if(-1 == upper) return null;
+	return str.substring(lower + start.length, upper);
+}
+
 Reader.prototype.digest = function(source, feed) {
 	var _this = this;
 	require('xml2js').parseString(feed.text, function(err, result) {
@@ -118,6 +162,15 @@ Reader.prototype.digest = function(source, feed) {
 			_this.assemble(current, "description", ["description", "content"], it);
 			_this.assemble(current, "date", ["pubDate", "dc:date", "updated"], it);
 			_this.assemble(current, "title", ["title"], it);
+
+			// find img element
+			var ele = _this.pick_node(current, ["content", "description"], ["img"], current.title);
+			if(null != ele) {
+				console.log("Image detected for %s: %s", current.title, ele);
+				current.cover = _this.pick_between(ele, "src=\"", "\"");
+				console.log("Retrieved image URL: %s", current.cover);
+			}
+
 			current.source = source._id;
 			current.save(function(err) {
 				if(err) {

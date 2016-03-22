@@ -94,7 +94,7 @@ router.route('/sources')
 
 // get all the sources (accessed at GET http://localhost:8080/api/sources)
     .get(function(req, res) {
-        Source.find(function(err, sources) {
+        Source.find({}, { "latest": 0, "__v": 0 }, function(err, sources) {
             if (err)
                 res.send(err);
 
