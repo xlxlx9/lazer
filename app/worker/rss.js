@@ -73,7 +73,7 @@ Reader.prototype.store = function(data, source) {
 	});
 }
 
-Reader.prototype.pick_node = function(obj, fields, tags, title) {
+Reader.prototype.pick_node = function(obj, fields, tags, masks) {
 	for(var i = 0; i < fields.length; i++) {
 		var fd = fields[i];
 		if(!obj.hasOwnProperty(fd)) continue;
@@ -81,11 +81,12 @@ Reader.prototype.pick_node = function(obj, fields, tags, title) {
 		if(Array.isArray(val)) val = val[0];
 		if(null == val || 0 == val.length) continue;
 		if(val.hasOwnProperty("_")) val = val["_"]; // node with attributes
-		if(!val.hasOwnProperty("indexOf")) {
-			//console.log("String meothd indexof NOT present:\n %s", title);
+		if(!val.indexOf) {
+			//console.log("String meothd indexof NOT present");
 			//console.log(val);
 			continue;
 		}
+		
 		for(var j = 0; j < tags.length; j++) {
 			var tn = tags[j];
 			var start = val.indexOf("<" + tn);
@@ -93,17 +94,30 @@ Reader.prototype.pick_node = function(obj, fields, tags, title) {
 				start = val.indexOf("&lt;" + tn);
 			}
 			if(-1 == start) {
-				console.log("Tag [%s] not found in %s", tn, val);
+				//console.log("Tag [%s] not found in attr [fd]", tn, fd);
 			   	continue; // tag start not found:(
 			}
-			var end = val.indexOf("/>", start);
-			var off = 2;
+			var end = val.indexOf(">", start);
+			var off = 1;
+			if(-1 == end) {
+				end = val.indexOf("/>", start);
+				off = 2;
+			}
 			if(-1 == end) {
 				end = val.indexOf("/&gt;", start);
 				off = 5;
 			}
 			if(-1 == end) continue; // end not found:(
-			return val.substring(start, end + off);
+			ret = val.substring(start, end + off);
+			var matched = false;
+			for(var k = 0; k < masks.length; k++) {
+				if(null == ret.match(masks[k])) continue;
+				matched = true;
+				console.log("result desregarded: %s for regex %s", ret, masks[k]);
+				break;
+			}
+			if(matched) continue;
+			return ret;
 		}
 	}
 	return null;
@@ -112,7 +126,7 @@ Reader.prototype.pick_node = function(obj, fields, tags, title) {
 Reader.prototype.pick_between = function(str, start, end) {
 	var lower = str.indexOf(start);
 	if(-1 == lower) return null;
-	var upper = str.indexOf(end, lower);
+	var upper = str.indexOf(end, lower + start.length);
 	if(-1 == upper) return null;
 	return str.substring(lower + start.length, upper);
 }
@@ -164,9 +178,9 @@ Reader.prototype.digest = function(source, feed) {
 			_this.assemble(current, "title", ["title"], it);
 
 			// find img element
-			var ele = _this.pick_node(current, ["content", "description"], ["img"], current.title);
+			var ele = _this.pick_node(it, ["content", "content:encoded", "description"], ["img"], [/facebook.*icon/, /twitter.*icon/, /google.*icon/]);
 			if(null != ele) {
-				console.log("Image detected for %s: %s", current.title, ele);
+				//console.log("Image detected for %s: %s", current.title, ele);
 				current.cover = _this.pick_between(ele, "src=\"", "\"");
 				console.log("Retrieved image URL: %s", current.cover);
 			}

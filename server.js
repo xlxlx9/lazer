@@ -129,6 +129,7 @@ router.route('/sources/:source_id')
 			source.src = req.body.src;
 			source.type = req.body.type;
 			source.icon = req.body.icon;
+			source.latest = req.body.latest;
 
             // save the source
             source.save(function(err) {
