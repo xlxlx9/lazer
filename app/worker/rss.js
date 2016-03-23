@@ -173,7 +173,7 @@ Reader.prototype.digest = function(source, feed) {
 			}
 			_this.assemble(current, "author", ["author", "dc:creator"], it, false);
 			_this.assemble(current, "link", ["link"], it);
-			_this.assemble(current, "description", ["description", "content"], it);
+			_this.assemble(current, "description", ["content", "content:encoded", "description"], it);
 			_this.assemble(current, "date", ["pubDate", "dc:date", "updated"], it);
 			_this.assemble(current, "title", ["title"], it);
 
