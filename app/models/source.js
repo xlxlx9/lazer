@@ -11,6 +11,7 @@ var SourceSchema   = new Schema({
 	,since: { type: Date, default: Date.now }
 	,icon: { type: String, default: ""}
 	,latest: { type: String, default: null }
+	,cover: { type: String, default: null }
 });
 
 module.exports = mongoose.model('Source', SourceSchema);

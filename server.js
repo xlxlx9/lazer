@@ -67,6 +67,7 @@ router.route('/sources')
 		source.src = req.body.src;
 		source.type = req.body.type;
 		source.icon = req.body.icon;
+		source.cover = req.body.cover;
 
         source.save(function(err) {
             if (err)
@@ -114,6 +115,7 @@ router.route('/sources/:source_id')
 			source.src = req.body.src;
 			source.type = req.body.type;
 			source.icon = req.body.icon;
+			source.cover = req.body.cover;
 			source.latest = req.body.latest;
 
             // save the source
@@ -290,7 +292,7 @@ router.route("/subscriptions/:uid")
 		if(null == channels || 1 > channels.length) {
 			res.send({ succ: -80, msg:"Empty subscription" });
 		}
-		Channel.find({ "_id": { $in: channels } })
+		Channel.find({ "_id": { $in: channels } }, { "title": 1, "link": 1, "date": 1, "cover": 1 })
 			   .populate({ path:"sources", populate: { path:"recent", model:Item} })
 			   .exec(function(err, docs) {
 				   	if(err) res.send(err);
