@@ -33,24 +33,9 @@ var empty = require("./app/util/empty");
 var Item = require('./app/models/item');
 var Source = require('./app/models/source');
 var Channel = require('./app/models/channel');
-var rss = require("./app/worker/rss");
 var chalk = require("chalk");
 
 var port = nconf.get("port");
-var gl = { rss: {} };
-
-if(nconf.get("hurry")) {
-	var tmt = 5;
-	console.log(chalk.blue("Start scraping in %d seconds! "), tmt);
-	setTimeout(function() {
-		rss.revisit(gl.rss);
-	}, tmt * 1000);
-}
-
-var minutes = 10;
-setInterval(function() {
-	rss.revisit(gl.rss);
-}, minutes * 60 * 1000);
 
 // ROUTES FOR OUR API
 // =============================================================================
