@@ -62,19 +62,28 @@ router.route('/sources')
     // create a source (accessed at POST http://localhost:8080/api/sources)
     .post(function(req, res) {
 		if(empty.chreqbody(["title", "src"], req)) res.send( { succ: -10 } );
-        var source = new Source();      // create a new instance of the Source model
-        source.title = req.body.title;  // set the sources name (comes from the request)
-		source.src = req.body.src;
-		source.type = req.body.type;
-		source.icon = req.body.icon;
-		source.cover = req.body.cover;
+		Source.findOne({ title: req.body.title }, function(e0, doc) {
+		  if(e0) {
+			console.log("Unable to test title uniquness for %s", req.body.title);
+			res.send(e0);
+		  } else if(null != doc) {
+			res.send({ succ: -25, msg: "Duplicated source title" });
+		  } else {
+			var source = new Source();      // create a new instance of the Source model
+			source.title = req.body.title;  // set the sources name (comes from the request)
+			source.src = req.body.src;
+			source.type = req.body.type;
+			source.icon = req.body.icon;
+			source.cover = req.body.cover;
 
-        source.save(function(err) {
-            if (err)
-                res.send(err);
+			source.save(function(err) {
+				if (err)
+					res.send(err);
 
-            res.json({ succ:0, msg: 'Source created!' });
-        });
+				res.json({ succ:0, msg: 'Source created!' });
+			});
+		  }
+		});
         
     })
 
