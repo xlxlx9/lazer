@@ -292,7 +292,7 @@ router.route("/subscriptions/:uid")
 		if(null == channels || 1 > channels.length) {
 			res.send({ succ: -80, msg:"Empty subscription" });
 		}
-		Channel.find({ "_id": { $in: channels } }, { "title": 1, "link": 1, "date": 1, "cover": 1 })
+		Channel.find({ "_id": { $in: channels } })
 			   .populate({ path:"sources", populate: { path:"recent", model:Item} })
 			   .exec(function(err, docs) {
 				   	if(err) res.send(err);
