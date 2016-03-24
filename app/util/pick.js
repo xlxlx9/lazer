@@ -1,6 +1,9 @@
 var Picker = function() {
 };
 
+var default_cover = "https://doc-10-20-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/3n2hcvm8eevs8jr8pii30fkot5i8f677/1458849600000/15174552360402620764/*/0BzHBzik_hopRN2VvaVF2S1V5QUU?e=download";
+var default_ico = "https://doc-08-20-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/uo5l23kslareu5df02hsqps8ffeh2c6l/1458849600000/15174552360402620764/*/0BzHBzik_hopRZlR0aGs3TWpFelU?e=download";
+
 Picker.prototype.pick = function(docs, seconds) {
 	var item_list = [];
 	var explored = {};
@@ -16,8 +19,14 @@ Picker.prototype.pick = function(docs, seconds) {
 			for(var k = 0; k < srcj.recent.length; k++) {
 				var itemk = srcj.recent[k];
 				itemk.icon = srcj.icon; 
+				if(null == itemk.icon || "" == itemk.icon) {
+					itemk.icon = default_ico;
+				}
 				if(null == itemk.cover || "" == itemk.cover) {
 					itemk.cover = srcj.cover;
+				}
+				if(null == itemk.cover || "" == itemk.cover) {
+					itemk.cover = default_cover;
 				}
 				item_list.push(itemk);
 			}
