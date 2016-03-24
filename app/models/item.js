@@ -8,6 +8,7 @@ var ItemSchema = new Schema({
 	 , content: String
 	 , cover: String
 	 , link: String
+	 , icon: String
 	 , date: { type: Date, default: Date.now }
 	 , video: String
 	 , source: { type: mongoose.Schema.Types.ObjectId, ref: 'Source' }
