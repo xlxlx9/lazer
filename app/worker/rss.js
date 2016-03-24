@@ -220,7 +220,6 @@ Reader.prototype.digest = function(source, feed) {
 }
 
 Reader.prototype.revisit = function(gl) {
-	var Source = require("../models/source");
 	if(gl.reading) {
 		console.log("Previous job not finished yet! Aborting...");
 		return;
@@ -230,6 +229,7 @@ Reader.prototype.revisit = function(gl) {
 	var idx = 0;
 	var _this = this;
 	var data = "";
+	var Source = require("../models/source");
 	Source.find(function(err, sources) {
 		if(err) {
 			console.error(err);
