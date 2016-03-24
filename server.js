@@ -293,7 +293,7 @@ router.route("/subscriptions/:uid")
 			res.send({ succ: -80, msg:"Empty subscription" });
 		}
 		Channel.find({ "_id": { $in: channels } })
-			   .populate({ path:"sources", populate: { path:"recent", model:Item} })
+			   .populate({ path:"sources", populate: { path:"recent", model:Item, select: "title _id cover link date content icon"} })
 			   .exec(function(err, docs) {
 				   	if(err) res.send(err);
 					console.log("Found channels in total: %d", docs.length);
