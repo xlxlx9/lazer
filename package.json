@@ -10,6 +10,7 @@
 		, "xmlbuilder": "~4.2.1"
         , "chalk": "~1.1.1"
 		, "nconf": "~0.8.4"
+		, "html-to-text": "~2.0.0"
 
     }
 }
