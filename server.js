@@ -316,6 +316,7 @@ router.route("/subscriptions/:uid")
 
 // all of our routes will be prefixed with /api
 app.use('/api', router);
+app.use('/adm', express.static("static/admin"));
 
 // START THE SERVER
 // =============================================================================
