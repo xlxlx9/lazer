@@ -39,6 +39,7 @@ Source.find({}, function(err, docs) {
 	for(var i in docs) {
 		var src = docs[i];
 		src.latest = null;
+		src.stamp = null;
 		src.save(save_one);
 	}
 });

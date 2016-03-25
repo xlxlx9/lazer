@@ -52,24 +52,29 @@ Reader.prototype.store = function(data, source) {
 		console.log("No changes for source [%s] - [%s], aborting...", source.title, source.id);
 		return;
 	}
+	var now = new Date();
+	if((null != source.stamp) && (null != source.latest)
+		&& (Math.floor(now.getHours() / 6) != Math.floor(source.stamp.getHours() / 6))) {
+		var Feed = require("../models/feed");
+		var fd = new Feed();
+		fd.source = source.id;
+		fd.text = source.latest;
+		fd.since = source.stamp;
+		fd.save(function(err, feed) {
+			if(err) {
+				console.warn("Failed to save feed for %s @ %s", source.title, feed.since);
+			} else {
+				console.log("Feed archived for %s @ %s", source.title, feed.since);
+			}	
+		});
+	}
 	source.latest = data;
+	source.stamp = now;
 	source.save(function(err) {
 		if(err) {
 			console.warn("Failed to save latest content for %s, but OK to proceed...", source.title);
 		}
-
-		var Feed = require("../models/feed");
-		var fd = new Feed();
-		fd.source = source.id;
-		fd.text = data;
-		fd.save(function(err, feed) {
-			if(err) {
-				console.warn("Failed to save feed for %s", source.title);
-			} else {
-				console.log("Pass to digest %s...", source.title);
-				_this.digest(source, feed);
-			}
-		});
+		_this.digest(source);
 	});
 }
 
@@ -131,9 +136,9 @@ Reader.prototype.pick_between = function(str, start, end) {
 	return str.substring(lower + start.length, upper);
 }
 
-Reader.prototype.digest = function(source, feed) {
+Reader.prototype.digest = function(source) {
 	var _this = this;
-	require('xml2js').parseString(feed.text, function(err, result) {
+	require('xml2js').parseString(source.latest, function(err, result) {
 		if(err) {
 			console.log("Parsing error for %s: %s", source.title, source.src);
 			console.error(err);
