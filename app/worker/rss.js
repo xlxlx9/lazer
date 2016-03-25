@@ -178,12 +178,18 @@ Reader.prototype.digest = function(source) {
 			}
 			_this.assemble(current, "author", ["author", "dc:creator"], it, false);
 			_this.assemble(current, "link", ["link"], it);
-			_this.assemble(current, "content", ["content", "content:encoded", "description"], it);
+			_this.assemble(current, "original", ["content", "content:encoded", "description"], it);
 			_this.assemble(current, "date", ["pubDate", "dc:date", "updated"], it);
 			_this.assemble(current, "title", ["title"], it);
 
+			if(null != current.original) {
+				var h2t = require("html-to-text");
+				var parse_opt = { "ignoreImage":true, "ignoreHref": true };
+				current.content = h2t.fromString(current.original, parse_opt);
+			}
+
 			// find img element
-			var ele = _this.pick_node(it, ["content", "content:encoded", "description"], ["img"], [/facebook.*icon/, /twitter.*icon/, /google.*icon/]);
+			var ele = _this.pick_node(it, ["content", "content:encoded", "description"], ["img"], [/facebook.*icon/, /twitter.*icon/, /google.*icon/, /ad\..*\/ad\//]);
 			if(null != ele) {
 				//console.log("Image detected for %s: %s", current.title, ele);
 				current.cover = _this.pick_between(ele, "src=\"", "\"");

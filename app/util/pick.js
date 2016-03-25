@@ -7,8 +7,6 @@ var default_ico = "http://www.cc.gatech.edu/~lxu315/lzdef/favico.png";
 Picker.prototype.pick = function(docs, seconds) {
 	var item_list = [];
 	var explored = {};
-	var h2t = require("html-to-text");
-	var parse_opt = { "ignoreImage":true, "ignoreHref": true };
 	for(var i = 0; i < docs.length; i++) {
 		var ch = docs[i];
 		for(var j = 0; j < ch.sources.length; j++) {
@@ -30,7 +28,6 @@ Picker.prototype.pick = function(docs, seconds) {
 				if(null == itemk.cover || "" == itemk.cover) {
 					itemk.cover = default_cover;
 				}
-				itemk.content = h2t.fromString(itemk.content, parse_opt); // remove html markups
 				item_list.push(itemk);
 			}
 		}
