@@ -249,7 +249,7 @@ router.route("/channels/:channel_id/:source_id")
 					channel.sources.splice(i, 1);
 					channel.save(function(e3) {
 						if(err) res.send(e3);
-						res.send({ succ: 0, msg: "Source deleted to channel" });
+						res.send({ succ: 0, msg: "Source deleted from channel" });
 					});
 					return;
 				}
@@ -260,10 +260,13 @@ router.route("/channels/:channel_id/:source_id")
 	  });
 router.route("/items")
 	  .get(function(req,res) {
-		  if(empty.chreqquery(["source"], req)) res.send({ succ: -40, msg:"Specify source by id, please" });
+		  if(empty.chreqquery(["source"], req)) {
+			  res.send({ succ: -40, msg:"Specify source by id, please" });
+			  return;
+		  }
 		  Item.find({ source: req.query.source }).limit(100).exec(function(err, items) {
 			  if(err) res.send(err);
-			  res.send({ succ: 0, items: items, source: req.params.source });
+			  else res.send({ succ: 0, items: items, source: req.params.source });
 		  });
 	  })
 	  .delete(function(req, res) {
