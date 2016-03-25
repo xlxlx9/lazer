@@ -1,11 +1,27 @@
-<html ng-app>
+<html ng-app="app">
 <head>
   <title>Hello World in AngularJS</title>
 </head>
-<body>
-
-<input ng-model="name"> Hello {{ name }}
-
-<script src="js/angular.min.js"></script>
+<body ng-controller="SourceController">
+	<ul>
+		<li ng-repeat="src in sources">
+			<p>{{ src.title }}</p>
+			<p><span>Tags: </span>
+				<span ng-repeat="tag in src.tags">{{tag}} </span>
+			</p>
+		</li>
+	</ul>
+	<script src="js/angular.min.js"></script>
+	<script src="js/angular-route.min.js"></script>
+	<script type="text/javascript">
+		angular.module('app', [])
+		  .controller('SourceController', ['$scope', function ($scope) {
+			$scope.sources= [
+			  { title: 'IGN - offline demo', tags: ["Technology", "Games", "Entertainment"] },
+			  { title: 'Medium - offline demo', tags: ["Design", "Technology", "Fashion"]},
+			  { title: 'THR - offline demo', tags: ["Entertainment"] },
+			];
+		  }]);
+	</script>
 </body>
 </html>
