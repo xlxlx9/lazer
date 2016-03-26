@@ -307,10 +307,25 @@ router.route("/subscriptions/:uid")
 		Channel.find({ "_id": { $in: channels } })
 			   .populate({ path:"sources", populate: { path:"recent", model:Item, select: "title _id cover link date content icon"} })
 			   .exec(function(err, docs) {
-				   	if(err) res.send(err);
-					console.log("Found channels in total: %d", docs.length);
-					var items = require("./app/util/pick").pick(docs, 10 * 60);
-					res.send({ succ: 0, items: items });
+				   	if(err) { 
+						res.send(err);
+						return;
+					}
+					//console.log("Found channels in total: %d", docs.length);
+					// locate traces
+					var Trace = require("./app/models/trace");
+					Trace.findOne({ user: req.params.uid }, function(e2, utr) {
+						if(e2) {
+							console.warn("Failed to locate user record! ");
+						}
+						if(null == utr) {
+							console.log("Creating trace for user [%s]", req.params.uid);
+							utr = new Trace();
+							utr.user = req.params.uid;
+						}
+						var items = require("./app/util/pick").pick(docs, 10 * 60, utr);
+						res.send({ succ: 0, items: items });
+					});
 				});
 	})
 	;

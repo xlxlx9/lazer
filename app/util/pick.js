@@ -4,9 +4,31 @@ var Picker = function() {
 var default_cover = "http://www.cc.gatech.edu/~lxu315/lzdef/cover.png";
 var default_ico = "http://www.cc.gatech.edu/~lxu315/lzdef/favico.png";
 
-Picker.prototype.pick = function(docs, seconds) {
+Picker.prototype.pick = function(docs, seconds, utrace) {
 	var item_list = [];
 	var explored = {};
+	var tmap = {};
+	var max = Math.ceil(seconds / 160);
+	var cnt = 0;
+	for(var i = 0; i < docs.length; i++) {
+		var ch = docs[i];
+		for(var j = 0; j < ch.sources.length; j++) {
+			var srcj = ch.sources[j];
+			//console.log("source key: %s", j);
+			if(null == srcj) continue;
+			if(srcj._id in explored) continue;
+			explored[srcj._id] = 1;
+			cnt += srcj.recent.length;
+		}
+	}
+	if(utrace.pool.length >= cnt) {
+		//console.log("free %d old items to show", 2 * max);
+		utrace.pool.splice(0, max * 2);
+	}
+	for(var i = 0; i < utrace.pool.length; i++) {
+		tmap[utrace.pool[i]] = 0;
+	}
+	explored = {}; // clear
 	for(var i = 0; i < docs.length; i++) {
 		var ch = docs[i];
 		for(var j = 0; j < ch.sources.length; j++) {
@@ -18,6 +40,7 @@ Picker.prototype.pick = function(docs, seconds) {
 			//console.info("adding item from source: %s - %s", srcj.title, srcj._id);
 			for(var k = 0; k < srcj.recent.length; k++) {
 				var itemk = srcj.recent[k];
+				if(tmap.hasOwnProperty(itemk._id)) continue; // this user has seen this before
 				itemk.icon = srcj.icon; 
 				if(null == itemk.icon || "" == itemk.icon) {
 					itemk.icon = default_ico;
@@ -33,8 +56,25 @@ Picker.prototype.pick = function(docs, seconds) {
 		}
 	}
 	item_list.sort(function(a,b) { return a.date > b.date; });
-	var max = Math.ceil(seconds / 160);
 	if(item_list.length > max) item_list.splice(max - 1, item_list.length - max);
+	
+	// record recent items
+	for(var i = 0; i < item_list.length; i++) {
+		//console.log("Adding [%s] to pool! ", item_list[i]._id);
+		utrace.pool.push(item_list[i]._id);	
+	}
+    if(50 < utrace.pool.length) {
+        //console.log("%d old traces droped for user [%s] ...", utrace.pool.length - 50, utrace.user);
+        utrace.pool.splice(0, utrace.pool.length - 50);
+    }
+
+	utrace.save(function(e2, d2) {
+		if(e2) {
+			console.warn("Failed to save traces for user [%s]", utrace.user);
+		//} else {
+			//console.log("Traces of user [%s] updated! ", utrace.user);
+		}
+	});
 	return item_list;
 };
 
