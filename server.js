@@ -194,7 +194,9 @@ router.route("/channels/:channel_id")
 	  }) */
 	    // test populate
 	  .get(function(req, res) { // find a channel by id
-		  Channel.findById(req.params.channel_id).populate("sources").exec(function(err, channel) {
+		  Channel.findById(req.params.channel_id)
+				 .populate({ "path": "sources", "select":"_id title recent src type" })
+				 .exec(function(err, channel) {
 			if(err) res.send(err);
 			res.send(channel);
 		  });
