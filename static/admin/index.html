@@ -18,15 +18,18 @@
 <script src="js/angular-route.min.js"></script>
 <script type="text/javascript">
 	angular.module('app', ["ngRoute"])
-	  .factory("Sources", function() {
-			return [
-			  { title: 'IGN - offline static demo', tags: ["Technology", "Games", "Entertainment"] },
-			  { title: 'Medium - offline demo', tags: ["Design", "Technology", "Fashion"]},
-			  { title: 'THR - offline static demo', tags: ["Entertainment"] },
-			];
-		})
+	  .factory("Sources", ["$http", function($http) {
+		  return $http.get("/api/sources");
+		}])
 	  .controller('SourceController', ['$scope', "Sources", function ($scope, Sources) {
-		$scope.sources = Sources;
+		  Sources.success(function(data) {
+				$scope.sources = data;
+			})
+			.error(function(data, status) {
+				console.log(data, status);
+				$scope.sources = [];
+			})
+			;
 	  }])
 	  .config(['$routeProvider', function ($routeProvider) {
 		$routeProvider
