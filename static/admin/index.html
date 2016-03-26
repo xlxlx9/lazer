@@ -9,27 +9,44 @@
 		<li ng-repeat="src in sources">
 			<p>{{ src.title }}</p>
 			<p><span>Tags: </span>
-				<span ng-repeat="tag in src.tags">{{tag}} </span>
+				<span ng-repeat="tag in src.tags">{{tag.title}} </span>
 			</p>
 		</li>
 	</ul>
 </script>
-<script src="js/angular.min.js"></script>
-<script src="js/angular-route.min.js"></script>
+<script src="lib/angular.min.js"></script>
+<script src="lib/angular-route.min.js"></script>
+<script src="js/asso.js"></script>
 <script type="text/javascript">
 	angular.module('app', ["ngRoute"])
-	  .factory("Sources", ["$http", function($http) {
-		  return $http.get("/api/sources");
+	  .factory("R0", ["$http", function($http) {
+		  return { "sources": $http.get("/api/sources"), "channels": $http.get("/api/channels") };
 		}])
-	  .controller('SourceController', ['$scope', "Sources", function ($scope, Sources) {
-		  Sources.success(function(data) {
+	  .controller('SourceController', ['$scope', "R0", function ($scope, R0) {
+		  R0.sources.success(function(data) {
 				$scope.sources = data;
+				Asso.tag($scope);
 			})
 			.error(function(data, status) {
 				console.log(data, status);
 				$scope.sources = [];
 			})
 			;
+		  R0.channels.success(function(data) {
+				if(0 != data.succ) {
+					console.log("channel listing error: " + data.succ);
+					$scope.channels = [];
+					return;
+				}
+				$scope.channels = data.channels;
+				Asso.tag($scope);
+			})
+			.error(function(data, status) {
+				console.log(data, status);
+				$scope.channels = [];
+			})
+			;
+			
 	  }])
 	  .config(['$routeProvider', function ($routeProvider) {
 		$routeProvider
