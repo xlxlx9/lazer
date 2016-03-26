@@ -2,7 +2,9 @@
 <head>
   <title>Subscritions & Sources</title>
 </head>
-<body ng-controller="SourceController">
+<body>
+<ng-view></ng-view>
+<script type="text/ng-template" id="/sources.html">
 	<ul>
 		<li ng-repeat="src in sources">
 			<p>{{ src.title }}</p>
@@ -11,17 +13,29 @@
 			</p>
 		</li>
 	</ul>
-	<script src="js/angular.min.js"></script>
-	<script src="js/angular-route.min.js"></script>
-	<script type="text/javascript">
-		angular.module('app', [])
-		  .controller('SourceController', ['$scope', function ($scope) {
-			$scope.sources= [
-			  { title: 'IGN - offline demo', tags: ["Technology", "Games", "Entertainment"] },
+</script>
+<script src="js/angular.min.js"></script>
+<script src="js/angular-route.min.js"></script>
+<script type="text/javascript">
+	angular.module('app', ["ngRoute"])
+	  .factory("Sources", function() {
+			return [
+			  { title: 'IGN - offline static demo', tags: ["Technology", "Games", "Entertainment"] },
 			  { title: 'Medium - offline demo', tags: ["Design", "Technology", "Fashion"]},
-			  { title: 'THR - offline demo', tags: ["Entertainment"] },
+			  { title: 'THR - offline static demo', tags: ["Entertainment"] },
 			];
-		  }]);
-	</script>
+		})
+	  .controller('SourceController', ['$scope', "Sources", function ($scope, Sources) {
+		$scope.sources = Sources;
+	  }])
+	  .config(['$routeProvider', function ($routeProvider) {
+		$routeProvider
+		  .when('/', {
+			templateUrl: '/sources.html',
+			controller: 'SourceController'
+		  });
+	  }])
+	;
+</script>
 </body>
 </html>
