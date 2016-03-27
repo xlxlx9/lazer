@@ -11,9 +11,10 @@ Asso = function() {
 			src_i.tags = [];
 		}
 		R0.id2ch = {};
+		R0.channels = scope.channels;
 		for(var i = 0; i < scope.channels.length; i++) {
 			var ch_i = scope.channels[i];
-			R0.id2ch[ch_i._id] = ch;
+			R0.id2ch[ch_i._id] = ch_i;
 			for(var j = 0; j < ch_i.sources.length; j++) {
 				var src_id = ch_i.sources[j];
 				//console.log("Adding tag " + ch_i.title + " to " + src_id);
@@ -23,6 +24,24 @@ Asso = function() {
 			}
 		}
 	}
-	
-	return {"tag": assignChannelsToSources };
+
+	function prepairSourceWithChannel(scope, params, R0) {
+			if(null == R0 || null == R0.id2src) return;
+			scope.src = R0.id2src[params.id];
+			scope.all_ch  = [];
+			var ol = R0.channels;
+			var active_ch= {};
+			for(var i = 0; i < scope.src.tags.length; i++) {
+				var ch_i = scope.src.tags[i];
+				active_ch[ch_i._id] = ch_i;
+			}
+			for(var i = 0; i < ol.length; i++) {
+				var ch_i = ol[i];
+				ch_i.active = active_ch.hasOwnProperty(ch_i._id);
+				if(ch_i.active) scope.all_ch.unshift(ch_i);
+				else scope.all_ch.push(ch_i);
+			}
+	}
+
+	return {"tag": assignChannelsToSources, "cook": prepairSourceWithChannel};
 }();

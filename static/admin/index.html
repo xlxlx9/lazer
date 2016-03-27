@@ -1,6 +1,7 @@
 <html ng-app="app">
 <head>
   <title>Subscritions & Sources</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
 <ng-view></ng-view>
@@ -15,9 +16,22 @@
 	</ul>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
-	<h1>{{src.title}}</h1>
-	<p>URL:</p>
-	<p><textarea>{{src.src}}</textarea></p>
+	<h1><a href="#/">Back</a>{{src.title}}</h1>
+	<p><span>Created on </span><span>{{src.since}}</span></p>
+	<p><label>Source URL</label><input type="text" value={{src.src}}></input></p>
+	<p><label>Fav Icon</label><input type="text" value={{src.icon}}></input></p>
+	<p><label>Default Image URL</label><input type="text" value={{src.cover}}></input></p>
+	<p>Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </p>
+	<div>
+		<ul>
+			<li ng-repeat="ch in all_ch">
+				<p ng-class="{active_ch: ch.active}">{{ch.title}}</p>
+			</li>
+			<li>
+				<p><input type="text" value="Add New Channel"/></p>
+			</li>
+		</ul>
+	</div>
 </script>
 <script src="lib/angular.min.js"></script>
 <script src="lib/angular-route.min.js"></script>
@@ -28,6 +42,7 @@
 		  return { "sources": $http.get("/api/sources"), "channels": $http.get("/api/channels") };
 		}])
 	  .controller('SourcesCtrl', ['$scope', "R0", function ($scope, R0) {
+		  if(null == R0.sources) return;
 		  R0.sources.success(function(data) {
 				$scope.sources = data;
 				Asso.tag($scope, R0);
@@ -37,6 +52,7 @@
 				$scope.sources = [];
 			})
 			;
+		  if(null == R0.channels || null == R0.channels.success) return;
 		  R0.channels.success(function(data) {
 				if(0 != data.succ) {
 					console.log("channel listing error: " + data.succ);
@@ -53,10 +69,7 @@
 			;
 			
 	  }])
-	  .controller("SrcDetailCtrl", ['$scope', '$routeParams', 'R0', function($scope, $routeParams, R0) {
-			if(null == R0 || null == R0.id2src) return;
-			$scope.src = R0.id2src[$routeParams.id];
-	  }])
+	  .controller("SrcDetailCtrl", ['$scope', '$routeParams', 'R0', Asso.cook])
 	  .config(['$routeProvider', function ($routeProvider) {
 		$routeProvider
 		  .when('/', {
