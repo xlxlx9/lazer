@@ -30,7 +30,7 @@
 	  .controller('SourcesCtrl', ['$scope', "R0", function ($scope, R0) {
 		  R0.sources.success(function(data) {
 				$scope.sources = data;
-				Asso.tag($scope);
+				Asso.tag($scope, R0);
 			})
 			.error(function(data, status) {
 				console.log(data, status);
@@ -44,7 +44,7 @@
 					return;
 				}
 				$scope.channels = data.channels;
-				Asso.tag($scope);
+				Asso.tag($scope, R0);
 			})
 			.error(function(data, status) {
 				console.log(data, status);
@@ -54,8 +54,8 @@
 			
 	  }])
 	  .controller("SrcDetailCtrl", ['$scope', '$routeParams', 'R0', function($scope, $routeParams, R0) {
-			console.log("source id to locate: " + $routeParams.id);
-			//?? get again? 
+			if(null == R0 || null == R0.id2src) return;
+			$scope.src = R0.id2src[$routeParams.id];
 	  }])
 	  .config(['$routeProvider', function ($routeProvider) {
 		$routeProvider
