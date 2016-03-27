@@ -6,8 +6,10 @@
 <body>
 <ng-view></ng-view>
 <script type="text/ng-template" id="/sources.html">
+	<h2>Source List</h2>
+	<p><span>Filter by title</span><input type="text" ng-model="search.title"></p>
 	<ul>
-		<li ng-repeat="src in sources">
+		<li ng-repeat="src in sources | filter: search">
 			<p><a href="#/{{src._id}}">{{ src.title }}</a></p>
 			<p><span>Tags: </span>
 				<span ng-repeat="tag in src.tags">{{tag.title}} </span>
