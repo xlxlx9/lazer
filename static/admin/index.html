@@ -7,12 +7,17 @@
 <script type="text/ng-template" id="/sources.html">
 	<ul>
 		<li ng-repeat="src in sources">
-			<p>{{ src.title }}</p>
+			<p><a href="#/{{src._id}}">{{ src.title }}</a></p>
 			<p><span>Tags: </span>
 				<span ng-repeat="tag in src.tags">{{tag.title}} </span>
 			</p>
 		</li>
 	</ul>
+</script>
+<script type="text/ng-template" id="/sourceDetail.html">
+	<h1>{{src.title}}</h1>
+	<p>URL:</p>
+	<p><textarea>{{src.src}}</textarea></p>
 </script>
 <script src="lib/angular.min.js"></script>
 <script src="lib/angular-route.min.js"></script>
@@ -22,7 +27,7 @@
 	  .factory("R0", ["$http", function($http) {
 		  return { "sources": $http.get("/api/sources"), "channels": $http.get("/api/channels") };
 		}])
-	  .controller('SourceController', ['$scope', "R0", function ($scope, R0) {
+	  .controller('SourcesCtrl', ['$scope', "R0", function ($scope, R0) {
 		  R0.sources.success(function(data) {
 				$scope.sources = data;
 				Asso.tag($scope);
@@ -48,11 +53,19 @@
 			;
 			
 	  }])
+	  .controller("SrcDetailCtrl", ['$scope', '$routeParams', 'R0', function($scope, $routeParams, R0) {
+			console.log("source id to locate: " + $routeParams.id);
+			//?? get again? 
+	  }])
 	  .config(['$routeProvider', function ($routeProvider) {
 		$routeProvider
 		  .when('/', {
 			templateUrl: '/sources.html',
-			controller: 'SourceController'
+			controller: 'SourcesCtrl'
+		  })
+		  .when('/:id', {
+			templateUrl: '/sourceDetail.html',
+			controller: 'SrcDetailCtrl'
 		  });
 	  }])
 	;
