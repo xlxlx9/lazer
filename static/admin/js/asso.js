@@ -50,7 +50,7 @@ Asso = function() {
 					scope.src["_id"] = data.id; // sync repo
 					scope.src.since = data.since;
 					scope.rec.create = false;
-					R0.sources_data.push(scope.src);
+					R0.sources_data.unshift(scope.src);
 					R0.id2src[data.id] = scope.src;
 					scope.all_ch = R0.channels_data.concat();
 				} else {
