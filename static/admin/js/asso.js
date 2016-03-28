@@ -28,6 +28,11 @@ Asso = function() {
 	function isEmpty(val) {
 		return (null == val) || (0 == val.trim().length);
 	}
+	function isURL(str) {
+		if(null == str) return false;
+		if(8 > str.length) return false;
+		return true;
+	}
 	function saveSourceAttributes(http, scope, R0) {
 		if(isEmpty(scope.src.title) || isEmpty(scope.src.src)) return;
 		if(scope.src.hasOwnProperty("_id")) {
@@ -88,6 +93,7 @@ Asso = function() {
 					else scope.all_ch.push(ch_i);
 				}
 			}
+			scope.is_url = isURL;
 			scope.update = function() {
 				if(null != scope.rec.utmt) {
 					clearTimeout(scope.rec.utmt);
