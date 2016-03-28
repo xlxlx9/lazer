@@ -15,14 +15,18 @@
 				<span ng-repeat="tag in src.tags">{{tag.title}} </span>
 			</p>
 		</li>
+		<li>
+			<p><a href="#/create">Add New Source</a></p>
+		</li>
 	</ul>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
 	<h1><a href="#/">Back</a>{{src.title}}</h1>
-	<p><span>Created on </span><span>{{src.since}}</span></p>
-	<p><label>Source URL</label><input type="text" value={{src.src}}></input></p>
-	<p><label>Fav Icon</label><input type="text" value={{src.icon}}></input></p>
-	<p><label>Default Image URL</label><input type="text" value={{src.cover}}></input></p>
+	<p ng-show="!(rec.create)"><span>Created on </span><span>{{src.since}}</span></p>
+	<p ng-show="rec.create"><label>Name</label><input type="text" ng-model="src.title" ng-change="update()"></input></p>
+	<p><label>Source URL</label><input type="text" ng-model="src.src" ng-change="update()"></input></p>
+	<p><label>Fav Icon</label><input type="text" ng-model="src.icon" ng-change="update()"></input></p>
+	<p><label>Default Image URL</label><input type="text" ng-model="src.cover" ng-change="update()"></input></p>
 	<p>Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </p>
 	<div>
 		<ul>
@@ -44,7 +48,6 @@
 		  return { "sources": $http.get("/api/sources"), "channels": $http.get("/api/channels") };
 		}])
 	  .controller('SourcesCtrl', ['$scope', "R0", function ($scope, R0) {
-		  if(null == R0.sources) return;
 		  R0.sources.success(function(data) {
 				$scope.sources = data;
 				Asso.tag($scope, R0);
@@ -54,7 +57,6 @@
 				$scope.sources = [];
 			})
 			;
-		  if(null == R0.channels || null == R0.channels.success) return;
 		  R0.channels.success(function(data) {
 				if(0 != data.succ) {
 					console.log("channel listing error: " + data.succ);
@@ -71,7 +73,7 @@
 			;
 			
 	  }])
-	  .controller("SrcDetailCtrl", ['$scope', '$routeParams', 'R0', Asso.cook])
+	  .controller("SrcDetailCtrl", ['$http', '$scope', '$routeParams', 'R0', Asso.cook])
 	  .config(['$routeProvider', function ($routeProvider) {
 		$routeProvider
 		  .when('/', {

@@ -76,11 +76,12 @@ router.route('/sources')
 			source.icon = req.body.icon;
 			source.cover = req.body.cover;
 
-			source.save(function(err) {
-				if (err)
+			source.save(function(err, doc) {
+				if (err) {
 					res.send(err);
-
-				res.json({ succ:0, msg: 'Source created!' });
+					return;
+				}
+				res.json({ succ:0, msg: 'Source created!', id: doc._id, since: doc.since });
 			});
 		  }
 		});
