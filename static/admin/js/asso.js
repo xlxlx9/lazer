@@ -35,12 +35,14 @@ Asso = function() {
 	}
 	function saveSourceAttributes(http, scope, R0) {
 		if(isEmpty(scope.src.title) || isEmpty(scope.src.src)) return;
+		scope.saved = false;
 		if(scope.src.hasOwnProperty("_id")) {
 			http.put("/api/sources/" + scope.src._id, scope.src)
 				.success(function(data) {
 					console.log("Save source succeeded");
 					console.log(data);
-					scope.saved = (0 == data.succ);
+					scope.rec.saved = (0 == data.succ);
+					scope.rec.save_stamp = new Date();
 				})
 				.error(function(error, data) {
 						console.log("Failed to update source: ");
@@ -55,6 +57,8 @@ Asso = function() {
 					scope.src["_id"] = data.id; // sync repo
 					scope.src.since = data.since;
 					scope.rec.create = false;
+					scope.rec.saved = true;
+					scope.rec.save_stamp = new Date().toLocaleDateString();
 					R0.sources_data.unshift(scope.src);
 					R0.id2src[data.id] = scope.src;
 					scope.all_ch = R0.channels_data.concat();
@@ -111,9 +115,29 @@ Asso = function() {
 		return obj;
 	}
 
+	function addNewChannel(ch, http, scope, R0) {
+		http.post("/api/channels", ch)
+			.success(function(data) {
+				if(0 != data.succ) {
+					console.log(data.msg);
+					return;
+				}
+				scope.rec.newch = {"title": "Add a new channel here"};
+				ch._id = data.id;
+				ch.sources = [];
+				R0.channels_data.push(ch);
+				R0.id2ch[data.id] = ch;
+				scope.all_ch.push(ch);
+			})
+			.error(function(error, data) {
+				console.log(error);
+			})
+			;
+	}
+
 	function prepairSourceWithChannel(http, scope, params, R0) {
 			if(null == R0 || null == R0.id2src) return;
-			scope.rec = {"utmt": null, "create": "create" == params.id };
+			scope.rec = {"utmt": null, "create": "create" == params.id , "newch": {"title": "Add a new channel here"}};
 			scope.src = scope.rec.create? generateNewSource() : R0.id2src[params.id];
 			scope.all_ch  = [];
 			if(!scope.rec.create) {
@@ -144,6 +168,10 @@ Asso = function() {
 				src2ch(src, ch, http, scope);
 				//console.log("Switching src[" + src._id + "] with ch[" + ch._id + "]");
 			};
+			scope.chadd = function(ch) {
+				//console.log("New channel: " + ch.title);
+				addNewChannel(ch, http, scope, R0);
+			}
 	}
 
 	return {"tag": assignChannelsToSources, "cook": prepairSourceWithChannel};

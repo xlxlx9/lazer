@@ -171,9 +171,9 @@ router.route("/channels")
 					  channel.rank = req.body.rank;
 					  channel.sources = req.body.sources || [];
 
-					  channel.save(function(err) {
+					  channel.save(function(err, doc) {
 						  if(err) res.send(err);
-						  res.send({ succ: 0, msg: "Channel created! " });
+						  else res.send({ succ: 0, msg: "Channel created! ", id: doc._id });
 					  });
 				  }
 			  });

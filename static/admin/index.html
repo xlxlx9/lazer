@@ -23,6 +23,7 @@
 <script type="text/ng-template" id="/sourceDetail.html">
 	<h1><a href="#/">Back</a>{{src.title}}</h1>
 	<p ng-show="!(rec.create)"><span>Created on </span><span>{{src.since}}</span></p>
+	<p ng-show="(rec.saved)"><span>Saved on </span><span>{{rec.save_stamp}}</span></p>
 	<p ng-show="rec.create"><label>Name</label><input type="text" ng-model="src.title" ng-change="update()"></input></p>
 	<p><label>Source URL</label><input type="text" ng-model="src.src" ng-change="update()"></input><a ng-show="is_url(src.src)" href="{{src.src}}" target="_blank">Preview</a></p>
 	<p><label>Fav Icon</label><input type="text" ng-model="src.icon" ng-change="update()"></input><a ng-show="is_url(src.icon)" href="{{src.icon}}" target="_blank">Preview</a></p>
@@ -34,7 +35,7 @@
 				<p ng-class="{active_ch: ch.active}">{{ch.title}}</p>
 			</li>
 			<li>
-				<p><input type="text" value="Add New Channel"/></p>
+				<p><form ng-submit="chadd(rec.newch)"><label>+</label><input type="text" ng-model="rec.newch.title"/></p>
 			</li>
 		</ul>
 	</div>
