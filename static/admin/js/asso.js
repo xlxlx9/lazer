@@ -68,6 +68,43 @@ Asso = function() {
 			})
 			;
 	}
+	function src2ch(src, ch, http, scope) {
+		if(ch.active) {
+			http.delete("/api/channels/" + ch._id + "/" + src._id)
+				.success(function(data) {
+					if(0 != data.succ) {
+						console.log("Failed to detach " + src.title + " from " + ch.title);
+						return;
+					}
+					ch.active = false;
+					var idx = src.tags.indexOf(ch);
+					if(-1 != idx) src.tags.splice(idx, 1);
+					else console.log("Failed to remove channel from source tag list");
+					idx = ch.sources.indexOf(src._id);
+					if(-1 != idx) ch.sources.splice(idx, 1);
+					else console.log("Failed to remove source id from channel");
+				})
+				.error(function(error, data) {
+					console.log(error);
+				})
+				;
+		} else {
+			http.put("/api/channels/" + ch._id + "/" + src._id)
+				.success(function(data) {
+					if(0 != data.succ) {
+						console.log("Failed to attach " + src.title + " from " + ch.title);
+						return;
+					}
+					ch.active = true;
+					ch.sources.push(src._id);
+					src.tags.push(ch);
+				})
+				.error(function(error, data) {
+					console.log(error);
+				})
+				;
+		}
+	}
 
 	function generateNewSource() {
 		var obj = {"title": "Enter a name", "src": null, "icon": null, "cover": null, "type": "rss"};
@@ -102,6 +139,10 @@ Asso = function() {
 				scope.rec.utmt = setTimeout(function() {
 					saveSourceAttributes(http, scope, R0);
 				}, 1500);
+			};
+			scope.switch = function(ch, src) {
+				src2ch(src, ch, http, scope);
+				//console.log("Switching src[" + src._id + "] with ch[" + ch._id + "]");
 			};
 	}
 

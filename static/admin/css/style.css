@@ -1,3 +1,6 @@
 .active_ch {
 	background-color: #A3D629;
 }
+.clickable {
+	cursor: pointer; 
+}
