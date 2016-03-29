@@ -134,6 +134,21 @@ Asso = function() {
 			})
 			;
 	}
+	
+	function updateChannel(ch, http) {
+		if(!ch.hasOwnProperty("_id")) {
+			console.log("Error: no _id in channel");
+			return;
+		}
+		http.put("/api/channels/" + ch._id, ch)
+			.success(function(data) {
+				ch.editing = false;
+			})
+			.error(function(error, data) {
+				console.log(error);
+			})
+			;
+	}
 
 	function prepairSourceWithChannel(http, scope, params, R0) {
 			if(null == R0 || null == R0.id2src) return;
@@ -171,6 +186,13 @@ Asso = function() {
 			scope.chadd = function(ch) {
 				//console.log("New channel: " + ch.title);
 				addNewChannel(ch, http, scope, R0);
+			}
+			scope.chflip = function(ch) {
+				if(null == ch.editing || !ch.editing) ch.editing = true;
+				else ch.editing = false;
+			}
+			scope.chput = function(ch) {
+				updateChannel(ch, http);
 			}
 	}
 

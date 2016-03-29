@@ -32,8 +32,11 @@
 	<p>Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </p>
 		<ul>
 			<li ng-repeat="ch in all_ch" ng-class="" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
-				<span ng-click="switch(ch, src)" ng-class="{active_ch: ch.active, clickable: true}">{{ch.title}}</span>
-				<button ng-show="ch.hover">Edit</button>
+				<span ng-click="switch(ch, src)" ng-class="{active_ch: ch.active, clickable: true}" ng-show="!ch.editing">{{ch.title}}</span>
+				<form ng-submit="chput(ch)" ng-show="ch.editing">
+					<input type="text" ng-model="ch.title">
+				</form>
+				<button ng-show="ch.hover" ng-click="chflip(ch)">{{ch.editing? "Cancel" : " Edit "}}</button>
 			</li>
 			<li>
 				<p><form ng-submit="chadd(rec.newch)"><label>+</label><input type="text" ng-model="rec.newch.title"/></p>
