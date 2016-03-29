@@ -37,7 +37,7 @@
 	</p>
 	<table class="w100">
         <tbody>
-		<tr ng-show="rec.create"><td class="trlbl hc pdvd">Name</td><td><input class="tfurl underscore" type="text" ng-model="src.title" ng-change="update()"></input></td><td></td>
+		<tr><td class="trlbl hc pdvd">Name</td><td><input class="tfurl underscore" type="text" ng-model="src.title" ng-change="update()"></input></td><td></td>
         <tr><td class="trlbl hc pdvd">Source URL</td><td align="left"><input class="tfurl underscore" type="text" ng-model="src.src" ng-change="update()"></input></td><td><a ng-show="is_url(src.src)" href="{{src.src}}" target="_blank">Preview</a></td></tr>
 	<tr><td class="trlbl hc pdvd">Fav Icon</td><td><input class="tfurl underscore" type="text" ng-model="src.icon" ng-change="update()"></input></td><td><a ng-show="is_url(src.icon)" href="{{src.icon}}" target="_blank">Preview</a></td></tr>
 	<tr><td class="trlbl hc pdvd">Default Image URL</td><td><input class="tfurl underscore" type="text" ng-model="src.cover" ng-change="update()"></input></td><td><a ng-show="is_url(src.cover)" href="{{src.cover}}" target="_blank">Preview</a></td></tr>
