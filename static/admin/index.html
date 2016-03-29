@@ -1,6 +1,6 @@
 <html ng-app="app">
 <head>
-  <title>Subscritions & Sources</title>
+  <title>Subscritions &amp; Sources</title>
   <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
 		<li ng-repeat="src in sources | filter: search">
 			<p><a href="#/{{src._id}}">{{ src.title }}</a></p>
 			<p><span>Tags: </span>
-				<span ng-repeat="tag in src.tags"><u>{{tag.title}}</u>&nbsp &nbsp</span><hr width="500" align="left"/>
+				<span ng-repeat="tag in src.tags"><u>{{tag.title}}</u>&nbsp; &nbsp;</span><hr width="500" align="left"/>
 			</p>
 		</li>
 	</ul>
