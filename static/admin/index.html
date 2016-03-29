@@ -10,29 +10,33 @@
 	<p><span>Filter by title</span><input type="text" ng-model="search.title"></p>
 	<ul>
 		<li>
-			<p><a href="#/create">Add New Source</a></p>
+			<p><a href="#/create">Add New Source</a></p><hr width="500" align="left"/>
 		</li>
 		<li ng-repeat="src in sources | filter: search">
 			<p><a href="#/{{src._id}}">{{ src.title }}</a></p>
 			<p><span>Tags: </span>
-				<span ng-repeat="tag in src.tags">{{tag.title}} </span>
+				<span ng-repeat="tag in src.tags"><u>{{tag.title}}</u>&nbsp &nbsp</span><hr width="500" align="left"/>
 			</p>
 		</li>
 	</ul>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
-	<h1><a href="#/">Back</a>{{src.title}}</h1>
+	<h1><a href="#/">Back</a><br /><br />Source Name:{{src.title}}</h1>
 	<p ng-show="!(rec.create)"><span>Created on </span><span>{{src.since}}</span></p>
 	<p ng-show="(rec.saved)"><span>Saved on </span><span>{{rec.save_stamp}}</span></p>
 	<p ng-show="rec.create"><label>Name</label><input type="text" ng-model="src.title" ng-change="update()"></input></p>
-	<p><label>Source URL</label><input type="text" ng-model="src.src" ng-change="update()"></input><a ng-show="is_url(src.src)" href="{{src.src}}" target="_blank">Preview</a></p>
-	<p><label>Fav Icon</label><input type="text" ng-model="src.icon" ng-change="update()"></input><a ng-show="is_url(src.icon)" href="{{src.icon}}" target="_blank">Preview</a></p>
-	<p><label>Default Image URL</label><input type="text" ng-model="src.cover" ng-change="update()"></input><a ng-show="is_url(src.cover)" href="{{src.cover}}" target="_blank">Preview</a></p>
+	<table>
+        <tbody>
+        <tr><td align="right">Source URL</td><td align="left"><input type="text" ng-model="src.src" ng-change="update()"></input></td><td><a ng-show="is_url(src.src)" href="{{src.src}}" target="_blank">Preview</a></td></tr>
+	<tr><td align= "right">Fav Icon</td><td><input type="text" ng-model="src.icon" ng-change="update()"></input></td><td><a ng-show="is_url(src.icon)" href="{{src.icon}}" target="_blank">Preview</a></td></tr>
+	<tr><td allignment="right">Default Image URL</td><td><input type="text" ng-model="src.cover" ng-change="update()"></input></td><td><a ng-show="is_url(src.cover)" href="{{src.cover}}" target="_blank">Preview</a></td></tr>
+        </tbody>
+    </table>
 	<div ng-show="!rec.create">
 	<p>Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </p>
 		<ul>
 			<li ng-repeat="ch in all_ch" ng-click="switch(ch, src)" ng-class="{clickable: true}">
-				<p ng-class="{active_ch: ch.active}">{{ch.title}}</p>
+				<sp ng-class="{active_ch: ch.active}">{{ch.title}} </sp> 
 			</li>
 			<li>
 				<p><form ng-submit="chadd(rec.newch)"><label>+</label><input type="text" ng-model="rec.newch.title"/></p>
