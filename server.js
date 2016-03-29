@@ -232,14 +232,17 @@ router.route("/channels/:channel_id/:source_id")
 				if(err) res.send(e2);
 				for(var i in channel.sources) {
 					if(channel.sources[i] == req.params.source_id) {
-						res.send({ succ: -20 }); // duplica
+						res.send({ succ: -20, msg: "Source already attached to channel" }); // duplica
 						return;
 					}
 				}
 				channel.sources.push(req.params.source_id);
 				channel.save(function(e3) {
 					if(err) res.send(e3);
-					res.send({ succ: 0, msg: "Source added to channel" });
+					else {
+						console.log("Source %s just joined the %s channel", chalk.yellow(source.title), chalk.yellow(channel.title));
+						res.send({ succ: 0, msg: "Source added to channel" });
+					}
 				});
 			});
 		  });
@@ -252,7 +255,10 @@ router.route("/channels/:channel_id/:source_id")
 					channel.sources.splice(i, 1);
 					channel.save(function(e3) {
 						if(err) res.send(e3);
-						res.send({ succ: 0, msg: "Source deleted from channel" });
+						else {
+							console.log("Source %s deleted from %s channel", chalk.yellow(req.params.source_id), chalk.yellow(channel.title));
+							res.send({ succ: 0, msg: "Source deleted from channel" });
+						}
 					});
 					return;
 				}

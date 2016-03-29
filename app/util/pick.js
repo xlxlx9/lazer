@@ -64,15 +64,15 @@ Picker.prototype.pick = function(docs, seconds, utrace) {
 		utrace.pool.push(item_list[i]._id);	
 	}
     if(50 < utrace.pool.length) {
-        //console.log("%d old traces droped for user [%s] ...", utrace.pool.length - 50, utrace.user);
+        console.log("%d old traces droped for user [%s] ...", utrace.pool.length - 50, utrace.user);
         utrace.pool.splice(0, utrace.pool.length - 50);
     }
 
 	utrace.save(function(e2, d2) {
 		if(e2) {
 			console.warn("Failed to save traces for user [%s]", utrace.user);
-		//} else {
-			//console.log("Traces of user [%s] updated! ", utrace.user);
+		} else {
+			console.log("Traces of user [%s] updated! ", utrace.user);
 		}
 	});
 	return item_list;
