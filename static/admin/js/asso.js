@@ -150,12 +150,13 @@ Asso = function() {
 			;
 	}
 
-	function prepairSourceWithChannel(http, scope, params, R0) {
+	function prepairSourceWithChannel(http, scope, params, loc, R0) {
 			if(null == R0 || null == R0.id2src) return;
 			scope.rec = {	  "utmt": null
 							, "create": ("create" == params.id)
 							, "newch": {"title": "Add a new channel here"}
 			};
+		    scope.go = function(path) { loc.path(path); };
 			scope.src = scope.rec.create? generateNewSource() : R0.id2src[params.id];
 			scope.all_ch  = [];
 			if(!scope.rec.create) {

@@ -27,8 +27,7 @@
 
 .tag {
 	font-size: 80%;
-	background: #808080;
-	border-radius: 2px;
+	border-radius: 3px;
 	padding-left: 5px;
 	padding-bottom: 2px;
 	padding-top: 2px;
@@ -38,6 +37,14 @@
 .pdvd {
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+.abs {
+	position: absolute;
+}
+
+.left0 {
+	left: 0px;
 }
 
 .lc {
@@ -58,8 +65,59 @@
 	background: #F3C921;
 }
 
+.bkg0 {
+	background-color: #797979;
+}
+
 .tbg0 {
 	border-top: 1px solid #797979;
+}
+
+.status {
+	font-size: 70%;
+}
+
+.msg {
+	color: #F3C921;
+	background-color: #595959;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.round3 {
+	border-radius: 3px;
+}
+
+.rel {
+	position: relative;
+}
+
+.ebtn {
+	top: 20px;
+}
+
+.gbtn0 {
+	padding-top: 16px;
+	padding-bottom: 16px;
+	padding-left: 32px;
+	padding-right: 32px;
+}
+
+.trlbl {
+	width: 15%;
+	font-size: 80%;
+	color: #808080;
+}
+
+.tfurl {
+	width: 80%;
+}
+
+.underscore {
+    border: 0;
+    outline: 0;
+    background: transparent;
+	border-bottom: 1px #808080 solid;
 }
 
 .title {
@@ -68,8 +126,17 @@
 	padding-bottom: 16px;
 }
 
+.inactive_ch {
+	border: 1px solid #808080;
+}
+
 .active_ch {
+	border: 1px solid #A3D629;
 	background-color: #A3D629;
+/*
+	border: 1px solid #808080;
+	background-color: #808080;
+*/
 }
 .clickable {
 	cursor: pointer; 

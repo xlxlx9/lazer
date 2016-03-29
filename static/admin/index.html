@@ -23,38 +23,40 @@
 			<div class="fl">
 				<p class="hc">{{ src.title }}</p>
 				<p class="hc pdvd ofh">
-					<span ng-repeat="tag in src.tags" class="tag txtfff">{{tag.title}}</span>
+					<span ng-repeat="tag in src.tags" class="tag active_ch txtfff">{{tag.title}}</span>
 				</p>
 			<div>
 		</div>
 	</div>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
-	<h1><a href="#/">Back</a><br /><br />Source Name:{{src.title}}</h1>
-	<p ng-show="!(rec.create)"><span>Created on </span><span>{{src.since}}</span></p>
-	<p ng-show="(rec.saved)"><span>Saved on </span><span>{{rec.save_stamp}}</span></p>
-	<p ng-show="rec.create"><label>Name</label><input type="text" ng-model="src.title" ng-change="update()"></input></p>
-	<table>
+	<div class="w100 txtctr"><div class="abs left0 gbtn0 clickable bkg0" ng-click="go('/')">Back</div><p class="title txtfff">{{src.title}}</p></div>
+	<p class="hc pdvd status" ng-show="!(rec.create)">
+		<span>Created on </span><span>{{src.since}}</span>
+		<span class="msg round3 hc" ng-show="(rec.saved)">Saved on {{rec.save_stamp}}</span>
+	</p>
+	<table class="w100">
         <tbody>
-        <tr><td align="right">Source URL</td><td align="left"><input type="text" ng-model="src.src" ng-change="update()"></input></td><td><a ng-show="is_url(src.src)" href="{{src.src}}" target="_blank">Preview</a></td></tr>
-	<tr><td align= "right">Fav Icon</td><td><input type="text" ng-model="src.icon" ng-change="update()"></input></td><td><a ng-show="is_url(src.icon)" href="{{src.icon}}" target="_blank">Preview</a></td></tr>
-	<tr><td allignment="right">Default Image URL</td><td><input type="text" ng-model="src.cover" ng-change="update()"></input></td><td><a ng-show="is_url(src.cover)" href="{{src.cover}}" target="_blank">Preview</a></td></tr>
+		<tr ng-show="rec.create"><td class="trlbl hc pdvd">Name</td><td><input class="tfurl underscore" type="text" ng-model="src.title" ng-change="update()"></input></td><td></td>
+        <tr><td class="trlbl hc pdvd">Source URL</td><td align="left"><input class="tfurl underscore" type="text" ng-model="src.src" ng-change="update()"></input></td><td><a ng-show="is_url(src.src)" href="{{src.src}}" target="_blank">Preview</a></td></tr>
+	<tr><td class="trlbl hc pdvd">Fav Icon</td><td><input class="tfurl underscore" type="text" ng-model="src.icon" ng-change="update()"></input></td><td><a ng-show="is_url(src.icon)" href="{{src.icon}}" target="_blank">Preview</a></td></tr>
+	<tr><td class="trlbl hc pdvd">Default Image URL</td><td><input class="tfurl underscore" type="text" ng-model="src.cover" ng-change="update()"></input></td><td><a ng-show="is_url(src.cover)" href="{{src.cover}}" target="_blank">Preview</a></td></tr>
         </tbody>
     </table>
-	<div ng-show="!rec.create">
-	<p>Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </p>
-		<ul>
-			<li ng-repeat="ch in all_ch" ng-class="" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
-				<span ng-click="switch(ch, src)" ng-class="{active_ch: ch.active, clickable: true}" ng-show="!ch.editing">{{ch.title}}</span>
-				<form ng-submit="chput(ch)" ng-show="ch.editing">
-					<input type="text" ng-model="ch.title">
-				</form>
-				<button ng-show="ch.hover" ng-click="chflip(ch)">{{ch.editing? "Cancel" : " Edit "}}</button>
-			</li>
-			<li>
-				<p><form ng-submit="chadd(rec.newch)"><label>+</label><input type="text" ng-model="rec.newch.title"/></p>
-			</li>
-		</ul>
+	<div class="pdvd" ng-show="!rec.create">
+	<p class="hc pdvd">Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </p>
+		<div class="fl w100 pdvd">
+			<div ng-repeat="ch in all_ch" ng-class="{pdvd: true, fl:true, hc: true}" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
+				<div class="rel">
+					<span ng-click="switch(ch, src)" ng-class="{active_ch: ch.active, inactive_ch: !ch.active, txtfff: ch.active, clickable: true, tag: true}" ng-show="!ch.editing">{{ch.title}}</span>
+					<form ng-submit="chput(ch)" ng-show="ch.editing" class="w100">
+						<input type="text" class="underscore" ng-model="ch.title">
+					</form>
+				<button class="abs ebtn" ng-show="ch.hover" ng-click="chflip(ch)">{{ch.editing? "Cancel" : "Rename"}}</button>
+				</div>
+			</div>
+		</div>
+		<p class="hc pdvd"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><input class="underscore" type="text" ng-model="rec.newch.title"/></p>
 	</div>
 </script>
 <script src="lib/angular.min.js"></script>
@@ -96,7 +98,7 @@
 			;
 			
 	  }])
-	  .controller("SrcDetailCtrl", ['$http', '$scope', '$routeParams', 'R0', Asso.cook])
+	  .controller("SrcDetailCtrl", ['$http', '$scope', '$routeParams', '$location', 'R0', Asso.cook])
 	  .config(['$routeProvider', function ($routeProvider) {
 		$routeProvider
 		  .when('/', {
