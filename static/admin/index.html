@@ -1,24 +1,33 @@
 <html ng-app="app">
 <head>
   <title>Subscritions &amp; Sources</title>
+  <meta name="viewport" content="width=device-width"/>
+  <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-<ng-view></ng-view>
+<ng-view ng-class="{w100: true}"></ng-view>
 <script type="text/ng-template" id="/sources.html">
-	<h2>Source List</h2>
-	<p><span>Filter by title</span><input type="text" ng-model="search.title"></p>
+	<h2 class="title txtfff txtctr">Source List</h2>
+	<p class="pdvd hc"><span>Filter by title</span><span class="hc"><input type="text" ng-model="search.title"></span></p>
 	<ul>
-		<li>
-			<p><a href="#/create">Add New Source</a></p><hr width="500" align="left"/>
-		</li>
-		<li ng-repeat="src in sources | filter: search">
-			<p><a href="#/{{src._id}}">{{ src.title }}</a></p>
-			<p><span>Tags: </span>
-				<span ng-repeat="tag in src.tags"><u>{{tag.title}}</u>&nbsp; &nbsp;</span><hr width="500" align="left"/>
-			</p>
+		<li class="pdvd hc tbg0">
+			<p><a href="#/create">Add New Source</a></p>
 		</li>
 	</ul>
+	<div class="w100">
+		<div ng-repeat="src in sources | filter: search" class="pdvd tbg0 clickable fl item" ng-click="go(src._id)">
+			<div class="fl lc">
+				<img class="icon" ng-src="{{src.icon|| rec.icon}}"></img>
+			</div>
+			<div class="fl">
+				<p class="hc">{{ src.title }}</p>
+				<p class="hc pdvd ofh">
+					<span ng-repeat="tag in src.tags" class="tag txtfff">{{tag.title}}</span>
+				</p>
+			<div>
+		</div>
+	</div>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
 	<h1><a href="#/">Back</a><br /><br />Source Name:{{src.title}}</h1>
@@ -56,7 +65,12 @@
 	  .factory("R0", ["$http", function($http) {
 		  return { "sources": $http.get("/api/sources"), "channels": $http.get("/api/channels") };
 		}])
-	  .controller('SourcesCtrl', ['$scope', "R0", function ($scope, R0) {
+	  .controller('SourcesCtrl', ['$scope', "$location", "R0", function ($scope, $location, R0) {
+		  $scope.go = function(path) { $location.path(path); };
+		
+		$scope.rec = {
+			 "icon": "http://www.cc.gatech.edu/~lxu315/lzdef/favico.png"
+		};
 		  R0.sources.success(function(data) {
 				$scope.sources = data;
 				Asso.tag($scope, R0);

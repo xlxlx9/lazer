@@ -2,7 +2,7 @@ Asso = function() {
 	function assignChannelsToSources(scope, R0) {
 		if(null == scope.sources) return;
 		if(null == scope.channels) return;
-		
+
 		var id2src = {};
 		R0.id2src = id2src;
 		R0.sources_data = scope.sources;
@@ -152,7 +152,10 @@ Asso = function() {
 
 	function prepairSourceWithChannel(http, scope, params, R0) {
 			if(null == R0 || null == R0.id2src) return;
-			scope.rec = {"utmt": null, "create": "create" == params.id , "newch": {"title": "Add a new channel here"}};
+			scope.rec = {	  "utmt": null
+							, "create": ("create" == params.id)
+							, "newch": {"title": "Add a new channel here"}
+			};
 			scope.src = scope.rec.create? generateNewSource() : R0.id2src[params.id];
 			scope.all_ch  = [];
 			if(!scope.rec.create) {
