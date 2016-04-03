@@ -51,6 +51,9 @@ Picker.prototype.pick = function(docs, seconds, utrace) {
 				if(null == itemk.cover || "" == itemk.cover) {
 					itemk.cover = default_cover;
 				}
+				if(null != itemk.content && 160 < itemk.content.length) {
+					itemk.content = itemk.content.substring(0, 160);
+				}
 				item_list.push(itemk);
 			}
 		}
