@@ -4,19 +4,21 @@
   <meta name="viewport" content="width=device-width"/>
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="lib/bootstrap-3.3.6-dist/css/bootstrap.min.css">
 </head>
 <body>
 <ng-view ng-class="{w100: true}"></ng-view>
 <script type="text/ng-template" id="/sources.html">
-	<h2 class="title txtfff txtctr">Source List</h2>
-	<p class="pdvd hc"><span>Filter by title</span><span class="hc"><input type="text" ng-model="search.title"></span></p>
-	<ul>
+<div class="container-fluid">
+	<h2 class="title txtfff txtctr full-width-row">Source List</h2>
+	<p class="pdvd hc full-width-row"><span>Filter by title</span><span class="hc"><input type="text" ng-model="search.title"></span></p>
+	<ul class="full-width-row">
 		<li class="pdvd hc tbg0">
 			<p><a href="#/create">Add New Source</a></p>
 		</li>
 	</ul>
-	<div class="w100">
-		<div ng-repeat="src in sources | filter: search" class="pdvd tbg0 clickable fl item" ng-click="go(src._id)">
+	<div class="row">
+		<div ng-repeat="src in sources | filter: search" class="col-xs-12 col-sm-6 col-md-6 col-lg-4 pdvd tbg0 clickable fl item" ng-click="go(src._id)">
 			<div class="fl lc">
 				<img class="icon" ng-src="{{src.icon|| rec.icon}}"></img>
 			</div>
@@ -28,6 +30,7 @@
 			<div>
 		</div>
 	</div>
+</div>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
 	<div class="w100 txtctr"><div class="abs left0 gbtn0 clickable bkg0" ng-click="go('/')">Back</div><p class="title txtfff">{{src.title}}</p></div>

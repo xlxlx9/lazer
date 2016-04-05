@@ -57,8 +57,16 @@
 }
 
 .item {
-	width: 33.3%;
-	min-width: 240px;
+	height: 80px;
+}
+
+.full-width-row {
+  overflow-x: hidden;
+}
+
+.full-width-row > div, h2, p, ul {
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 .item:hover {
