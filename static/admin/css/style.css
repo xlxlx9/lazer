@@ -39,6 +39,11 @@
 	padding-bottom: 10px;
 }
 
+.pdvd2 {
+	padding-top: 15;
+	padding-bottom: 10px;
+}
+
 .abs {
 	position: absolute;
 }
@@ -64,10 +69,6 @@
   overflow-x: hidden;
 }
 
-.full-width-row > div, h2, p, ul {
-  margin-left: -15px;
-  margin-right: -15px;
-}
 
 .item:hover {
 	background: #F3C921;
@@ -132,6 +133,7 @@
 	background: #393939;
 	padding-top: 16px;
 	padding-bottom: 16px;
+	margin-top: 0px;
 }
 
 .inactive_ch {
@@ -139,8 +141,8 @@
 }
 
 .active_ch {
-	border: 1px solid #A3D629;
-	background-color: #A3D629;
+	border: 1px solid #83B613;
+	background-color: #83B613;
 /*
 	border: 1px solid #808080;
 	background-color: #808080;

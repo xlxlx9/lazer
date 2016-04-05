@@ -9,17 +9,17 @@
 <body>
 <ng-view ng-class="{w100: true}"></ng-view>
 <script type="text/ng-template" id="/sources.html">
-<div class="container-fluid">
-	<h2 class="title txtfff txtctr full-width-row">Source List</h2>
-	<p class="pdvd hc full-width-row"><span>Filter by title</span><span class="hc"><input type="text" ng-model="search.title"></span></p>
-	<ul class="full-width-row">
+	<p class="title txtfff txtctr ">Source List</p>
+	<p class="pdvd hc "><span>Filter by title</span><span class="hc"><input type="text" ng-model="search.title"></span></p>
+	<ul class="">
 		<li class="pdvd hc tbg0">
 			<p><a href="#/create">Add New Source</a></p>
 		</li>
 	</ul>
+<div class="container-fluid">
 	<div class="row">
-		<div ng-repeat="src in sources | filter: search" class="col-xs-12 col-sm-6 col-md-6 col-lg-4 pdvd tbg0 clickable fl item" ng-click="go(src._id)">
-			<div class="fl lc">
+		<div ng-repeat="src in sources | filter: search" class="col-xs-12 col-sm-6 col-md-6 col-lg-4 pdvd2 tbg0 clickable fl item" ng-click="go(src._id)">
+			<div class="fl">
 				<img class="icon" ng-src="{{src.icon|| rec.icon}}"></img>
 			</div>
 			<div class="fl">
