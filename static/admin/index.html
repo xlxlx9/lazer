@@ -33,7 +33,7 @@
 </div>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
-	<div class="w100 txtctr bigger"><div class="abs left0 gbtn0 clickable bkg0" ng-click="go('/')">Back</div><p class="title txtfff">{{src.title}}</p></div>
+	<div class="w100 txtctr bigger"><div class="abs left0 gbtn0 clickable bkg1 txtfff" ng-click="go('/')">Back</div><p class="title txtfff">{{src.title}}</p></div>
 	<p class="hc pdvd status" ng-show="!(rec.create)">
 		<span>Created on </span><span>{{src.since}}</span>
 		<span class="msg round3 hc" ng-show="(rec.saved)">Saved on {{rec.save_stamp}}</span>
@@ -47,7 +47,7 @@
         </tbody>
     </table>
 	<div class="pdvd" ng-show="!rec.create">
-	<p class="hc pdvd">Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </p>
+	<p class="hc pdvd tbg0">Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </p>
 		<div class="fl w100 pdvd">
 			<div ng-repeat="ch in all_ch" ng-class="{pdvd: true, fl:true, hc: true}" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
 				<div class="rel">

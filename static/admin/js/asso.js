@@ -155,6 +155,7 @@ Asso = function() {
 			scope.rec = {	  "utmt": null
 							, "create": ("create" == params.id)
 							, "newch": {"title": "Add a new channel here"}
+							, "edit": false
 			};
 		    scope.go = function(path) { loc.path(path); };
 			scope.src = scope.rec.create? generateNewSource() : R0.id2src[params.id];
