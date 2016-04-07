@@ -19,13 +19,13 @@
 <div class="container-fluid">
 	<div class="row">
 		<div ng-repeat="src in sources | filter: search" class="ofh col-xs-12 col-sm-6 col-md-6 col-lg-4 pdvd2 tbg0 clickable fl item" ng-click="go(src._id)">
-			<div class="fl">
-				<img class="icon" ng-src="{{src.icon|| rec.icon}}"></img>
+			<div class="fl h100">
+				<img class="icon vmid" ng-src="{{src.icon|| rec.icon}}"></img>
 			</div>
 			<div class="fl ofh" style="width: 80%">
 				<div class="hc mgv0">{{ src.title }}</div>
-				<div class="hc pdvd ofh">
-					<div ng-repeat="tag in src.tags" class="fl tag active_ch txtfff mgb3">{{tag.title}}</div>
+				<div class="hc pdt2 ofh">
+					<div ng-repeat="tag in src.tags" class="fl tag-in-list active_ch txtfff mgb3">{{tag.title}}</div>
 				</div>
 			<div>
 		</div>
