@@ -47,23 +47,23 @@
         </tbody>
     </table>
 	<div class="pdvd" ng-show="!rec.create">
-		<div class="fl w100">
-			<div class="hc fl pdvd">Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </div>
-			<div class="rl gbtn1 clickable bkg1 txtfff round3" ng-click="rec.edit=!rec.edit">Edit</div>
-		</div>
+		<div class="hc pdvd">Attached to {{src.tags.length}} channel{{2 > src.tags.length? "" : "s"}}: </div>
 		<div class="fl w100 pdvd">
-			<div ng-repeat="ch in all_ch" ng-class="{pdvd: true, fl:true, hc: true}" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
+			<div ng-repeat="ch in all_ch" ng-class="{pdvd2: true, fl:true, hc: true}" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
 				<div class="rel">
-					<span ng-show="rec.edit" class="clickable">X</span>
-					<span ng-click="chclk(ch, src, rec)" ng-class="{active_ch: ch.active, inactive_ch: !ch.active, txtfff: ch.active, clickable: true, tag: true}" ng-show="!ch.editing">{{ch.title}}</span>
-					<form ng-submit="chput(ch)" ng-show="ch.editing" class="w100">
-						<input type="text" class="underscore" ng-model="ch.title">
-						<button class="" ng-show="ch.editing" ng-click="chflip(ch)">Cancel</button>
+					<img class="close-btn clickable" ng-src="img/{{rec.edit? 'close.png' : 'empty.gif'}}" alt="Delete"></img>
+					<span ng-click="chclk(ch, src, rec)" ng-class="{active_ch: ch.active, inactive_ch: !ch.active, txtfff: ch.active, clickable: true, tag: true}">{{ch.title}}</span>
+					<form ng-submit="chput(ch)" ng-show="ch.editing && rec.edit" class="w100 inblk abs left0 top-edit">
+						<input type="text" class="" ng-model="ch.title">
+						<!-- <button class="" ng-show="ch.editing" ng-click="chflip(ch)">Cancel</button> -->
 					</form>
 				</div>
 			</div>
 		</div>
-		<p class="hc pdvd"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><input class="underscore" type="text" ng-model="rec.newch.title" select-on-click/></p>
+		<div class="fl w100">
+			<div class="hc pdvd fl"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><input class="underscore" type="text" ng-model="rec.newch.title" select-on-click/></div>
+			<div class="rl gbtn1 clickable bkg1 txtfff round3" ng-click="rec.edit=!rec.edit">{{rec.edit?'Done':'Edit'}}</div>
+		</div>
 	</div>
 </script>
 <script src="lib/angular.min.js"></script>
