@@ -18,15 +18,15 @@
 	</ul>
 <div class="container-fluid">
 	<div class="row">
-		<div ng-repeat="src in sources | filter: search" class="col-xs-12 col-sm-6 col-md-6 col-lg-4 pdvd2 tbg0 clickable fl item" ng-click="go(src._id)">
+		<div ng-repeat="src in sources | filter: search" class="ofh col-xs-12 col-sm-6 col-md-6 col-lg-4 pdvd2 tbg0 clickable fl item" ng-click="go(src._id)">
 			<div class="fl">
 				<img class="icon" ng-src="{{src.icon|| rec.icon}}"></img>
 			</div>
-			<div class="fl">
-				<p class="hc mgv0">{{ src.title }}</p>
-				<p class="hc pdvd ofh">
-					<span ng-repeat="tag in src.tags" class="tag active_ch txtfff">{{tag.title}}</span>
-				</p>
+			<div class="fl ofh" style="width: 80%">
+				<div class="hc mgv0">{{ src.title }}</div>
+				<div class="hc pdvd ofh">
+					<div ng-repeat="tag in src.tags" class="fl tag active_ch txtfff mgb3">{{tag.title}}</div>
+				</div>
 			<div>
 		</div>
 	</div>
