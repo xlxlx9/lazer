@@ -60,6 +60,10 @@
 	padding-left: 10px;
 }
 
+.rc {
+	padding-right: 10px;
+}
+
 .hc {
 	padding-left: 10px;
 	padding-right: 10px;
@@ -113,6 +117,14 @@
 	top: 20px;
 }
 
+.gbtn1 {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 24px;
+	padding-right: 24px;
+	margin-right: 10px;
+}
+
 .gbtn0 {
 	padding-top: 16px;
 	padding-bottom: 16px;
@@ -159,7 +171,12 @@
 .clickable {
 	cursor: pointer; 
 }
+
 .fl {
 	float: left;
+}
+
+.rl {
+	float: right;
 }
 
