@@ -184,9 +184,12 @@ Asso = function() {
 					saveSourceAttributes(http, scope, R0);
 				}, 1500);
 			};
-			scope.switch = function(ch, src) {
-				src2ch(src, ch, http, scope);
-				//console.log("Switching src[" + src._id + "] with ch[" + ch._id + "]");
+			scope.chclk = function(ch, src, r0) {
+				if(r0.edit) {
+					ch.editing = true;
+				} else {
+					src2ch(src, ch, http, scope);
+				}
 			};
 			scope.chadd = function(ch) {
 				//console.log("New channel: " + ch.title);

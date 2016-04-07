@@ -55,11 +55,11 @@
 			<div ng-repeat="ch in all_ch" ng-class="{pdvd: true, fl:true, hc: true}" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
 				<div class="rel">
 					<span ng-show="rec.edit" class="clickable">X</span>
-					<span ng-click="switch(ch, src)" ng-class="{active_ch: ch.active, inactive_ch: !ch.active, txtfff: ch.active, clickable: true, tag: true}" ng-show="!ch.editing">{{ch.title}}</span>
+					<span ng-click="chclk(ch, src, rec)" ng-class="{active_ch: ch.active, inactive_ch: !ch.active, txtfff: ch.active, clickable: true, tag: true}" ng-show="!ch.editing">{{ch.title}}</span>
 					<form ng-submit="chput(ch)" ng-show="ch.editing" class="w100">
 						<input type="text" class="underscore" ng-model="ch.title">
+						<button class="" ng-show="ch.editing" ng-click="chflip(ch)">Cancel</button>
 					</form>
-				<button class="abs ebtn" ng-show="ch.hover" ng-click="chflip(ch)">{{ch.editing? "Cancel" : "Rename"}}</button>
 				</div>
 			</div>
 		</div>
