@@ -9,7 +9,7 @@
 <body>
 <ng-view ng-class="{w100: true}"></ng-view>
 <script type="text/ng-template" id="/sources.html">
-	<p class="title txtfff txtctr ">Source List</p>
+	<p class="title txtfff txtctr bigger">Source List</p>
 	<p class="pdvd hc "><span>Filter by title</span><span class="hc"><input type="text" ng-model="search.title"></span></p>
 	<ul class="">
 		<li class="pdvd hc tbg0">
@@ -33,7 +33,7 @@
 </div>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
-	<div class="w100 txtctr"><div class="abs left0 gbtn0 clickable bkg0" ng-click="go('/')">Back</div><p class="title txtfff">{{src.title}}</p></div>
+	<div class="w100 txtctr bigger"><div class="abs left0 gbtn0 clickable bkg0" ng-click="go('/')">Back</div><p class="title txtfff">{{src.title}}</p></div>
 	<p class="hc pdvd status" ng-show="!(rec.create)">
 		<span>Created on </span><span>{{src.since}}</span>
 		<span class="msg round3 hc" ng-show="(rec.saved)">Saved on {{rec.save_stamp}}</span>
@@ -59,14 +59,14 @@
 				</div>
 			</div>
 		</div>
-		<p class="hc pdvd"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><input class="underscore" type="text" ng-model="rec.newch.title"/></p>
+		<p class="hc pdvd"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><input class="underscore" type="text" ng-model="rec.newch.title" select-on-click/></p>
 	</div>
 </script>
 <script src="lib/angular.min.js"></script>
 <script src="lib/angular-route.min.js"></script>
 <script src="js/asso.js"></script>
 <script type="text/javascript">
-	angular.module('app', ["ngRoute"])
+	var m = angular.module('app', ["ngRoute"])
 	  .factory("R0", ["$http", function($http) {
 		  return { "sources": $http.get("/api/sources"), "channels": $http.get("/api/channels") };
 		}])
@@ -114,6 +114,19 @@
 		  });
 	  }])
 	;
+	m.directive('selectOnClick', ['$window', function ($window) {
+		return {
+			restrict: 'A',
+			link: function (scope, element, attrs) {
+				element.on('click', function () {
+					if (!$window.getSelection().toString()) {
+						// Required for mobile Safari
+						this.setSelectionRange(0, this.value.length)
+					}
+				});
+			}
+		};
+	}]);
 </script>
 </body>
 </html>
