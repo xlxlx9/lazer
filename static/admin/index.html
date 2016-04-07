@@ -51,7 +51,7 @@
 		<div class="fl w100 pdvd">
 			<div ng-repeat="ch in all_ch" ng-class="{pdvd2: true, fl:true, hc: true}" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
 				<div class="rel">
-					<img class="close-btn clickable" ng-src="img/{{rec.edit? 'close.png' : 'empty.gif'}}" alt="Delete" ng-click="chdel(ch, rec)"></img>
+					<img class="close-btn clickable" ng-src="img/{{rec.edit? 'delete.png' : 'empty.gif'}}" alt="Delete" ng-click="chdel(ch, rec)"></img>
 					<span ng-click="chclk(ch, src, rec)" ng-class="{active_ch: ch.active, inactive_ch: !ch.active, txtfff: ch.active, clickable: true, tag: true}">{{ch.title}}</span>
 					<form ng-submit="chput(ch)" ng-show="ch.editing && rec.edit" class="w100 inblk abs left0 top-edit">
 						<input type="text" class="" ng-model="ch.title">
