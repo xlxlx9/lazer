@@ -137,7 +137,7 @@ Asso = function() {
 	}
 
 	function generateNewSource() {
-		var obj = {"title": "Enter a name", "src": null, "icon": null, "cover": null, "type": "rss"};
+		var obj = {"title": null, "src": null, "icon": null, "cover": null, "type": "rss"};
 		return obj;
 	}
 
@@ -148,7 +148,7 @@ Asso = function() {
 					console.log(data.msg);
 					return;
 				}
-				scope.rec.newch = {"title": "Add a new channel here"};
+				scope.rec.newch = {"title": ""};
 				ch._id = data.id;
 				ch.sources = [];
 				R0.channels_data.push(ch);
@@ -180,7 +180,7 @@ Asso = function() {
 			if(null == R0 || null == R0.id2src) return;
 			scope.rec = {	  "utmt": null
 							, "create": ("create" == params.id)
-							, "newch": {"title": "Add a new channel here"}
+							, "newch": {"title": ""}
 							, "edit": false
 			};
 		    scope.go = function(path) { loc.path(path); };

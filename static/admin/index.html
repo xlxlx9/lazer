@@ -33,17 +33,17 @@
 </div>
 </script>
 <script type="text/ng-template" id="/sourceDetail.html">
-	<div class="w100 txtctr bigger"><div class="abs left0 gbtn0 clickable bkg1 txtfff" ng-click="go('/')">Back</div><p class="title txtfff">{{src.title}}</p></div>
+	<div class="w100 txtctr bigger"><div class="abs left0 gbtn0 clickable bkg1 txtfff" ng-click="go('/')">Back</div><p class="title txtfff">{{src.title||'New Source'}}</p></div>
 	<p class="hc pdvd status" ng-show="!(rec.create)">
 		<span>Created on </span><span>{{src.since}}</span>
 		<span class="msg round3 hc" ng-show="(rec.saved)">Saved on {{rec.save_stamp}}</span>
 	</p>
 	<table class="w100">
         <tbody>
-		<tr><td class="trlbl hc pdvd">Name</td><td class="underscore"><input class="tfurl non" type="text" ng-model="src.title" ng-change="update()"></input></td><td></td>
-        <tr><td class="trlbl hc pdvd">URL</td><td class="underscore"><input class="tfurl non" type="text" ng-model="src.src" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.src)" class="hc" href="{{src.src}}" target="_blank">Preview</a></td></tr>
-	<tr><td class="trlbl hc pdvd">Icon</td><td class="underscore"><input class="tfurl non" type="text" ng-model="src.icon" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.icon)" class="hc" href="{{src.icon}}" target="_blank">Preview</a></td></tr>
-	<tr><td class="trlbl hc pdvd">Cover</td><td class="underscore"><input class="tfurl non" type="text" ng-model="src.cover" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.cover)" class="hc" href="{{src.cover}}" target="_blank">Preview</a></td></tr>
+		<tr><td class="trlbl hc pdvd">Name</td><td class="underscore"><input class="tfurl non" type="text" placeholder="Enter a name" ng-model="src.title" ng-change="update()"></input></td><td></td>
+        <tr><td class="trlbl hc pdvd">URL</td><td class="underscore"><input class="tfurl non" type="text" placeholder="Make sure this is a valid xml" ng-model="src.src" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.src)" class="hc" href="{{src.src}}" target="_blank">Preview</a></td></tr>
+	<tr><td class="trlbl hc pdvd">Icon</td><td class="underscore"><input class="tfurl non" type="text" placeholder="Optional URL for icon preceding the item title" ng-model="src.icon" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.icon)" class="hc" href="{{src.icon}}" target="_blank">Preview</a></td></tr>
+	<tr><td class="trlbl hc pdvd">Cover</td><td class="underscore"><input class="tfurl non" type="text" placeholder="Optional URL for default image for items from this source" ng-model="src.cover" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.cover)" class="hc" href="{{src.cover}}" target="_blank">Preview</a></td></tr>
         </tbody>
     </table>
 	<div class="pdvd" ng-show="!rec.create">
@@ -61,7 +61,7 @@
 			</div>
 		</div>
 		<div class="fl w100">
-			<div class="hc pdvd fl"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><span class="underscore"><input class="non" type="text" ng-model="rec.newch.title" select-on-click/></span></div>
+			<div class="hc pdvd fl"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><span class="underscore"><input class="non" type="text" ng-model="rec.newch.title" placeholder="Add a new channel here"/></span></div>
 			<div id="edit_btn" class="rl gbtn1 clickable bkg1 txtfff round3" ng-click="rec.edit=!rec.edit">{{rec.edit?'Done':'Edit'}}</div>
 		</div>
 	</div>
@@ -118,19 +118,6 @@
 		  });
 	  }])
 	;
-	m.directive('selectOnClick', ['$window', function ($window) {
-		return {
-			restrict: 'A',
-			link: function (scope, element, attrs) {
-				element.on('click', function () {
-					if (!$window.getSelection().toString()) {
-						// Required for mobile Safari
-						this.setSelectionRange(0, this.value.length)
-					}
-				});
-			}
-		};
-	}]);
 </script>
 </body>
 </html>
