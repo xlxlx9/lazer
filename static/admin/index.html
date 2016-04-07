@@ -23,7 +23,7 @@
 				<img class="icon" ng-src="{{src.icon|| rec.icon}}"></img>
 			</div>
 			<div class="fl">
-				<p class="hc">{{ src.title }}</p>
+				<p class="hc mgv0">{{ src.title }}</p>
 				<p class="hc pdvd ofh">
 					<span ng-repeat="tag in src.tags" class="tag active_ch txtfff">{{tag.title}}</span>
 				</p>
@@ -40,10 +40,10 @@
 	</p>
 	<table class="w100">
         <tbody>
-		<tr><td class="trlbl hc pdvd">Name</td><td><input class="tfurl underscore" type="text" ng-model="src.title" ng-change="update()"></input></td><td></td>
-        <tr><td class="trlbl hc pdvd">Source URL</td><td align="left"><input class="tfurl underscore" type="text" ng-model="src.src" ng-change="update()"></input></td><td><a ng-show="is_url(src.src)" href="{{src.src}}" target="_blank">Preview</a></td></tr>
-	<tr><td class="trlbl hc pdvd">Fav Icon</td><td><input class="tfurl underscore" type="text" ng-model="src.icon" ng-change="update()"></input></td><td><a ng-show="is_url(src.icon)" href="{{src.icon}}" target="_blank">Preview</a></td></tr>
-	<tr><td class="trlbl hc pdvd">Default Image URL</td><td><input class="tfurl underscore" type="text" ng-model="src.cover" ng-change="update()"></input></td><td><a ng-show="is_url(src.cover)" href="{{src.cover}}" target="_blank">Preview</a></td></tr>
+		<tr><td class="trlbl hc pdvd">Name</td><td class="underscore"><input class="tfurl non" type="text" ng-model="src.title" ng-change="update()"></input></td><td></td>
+        <tr><td class="trlbl hc pdvd">URL</td><td class="underscore"><input class="tfurl non" type="text" ng-model="src.src" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.src)" class="hc" href="{{src.src}}" target="_blank">Preview</a></td></tr>
+	<tr><td class="trlbl hc pdvd">Icon</td><td class="underscore"><input class="tfurl non" type="text" ng-model="src.icon" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.icon)" class="hc" href="{{src.icon}}" target="_blank">Preview</a></td></tr>
+	<tr><td class="trlbl hc pdvd">Cover</td><td class="underscore"><input class="tfurl non" type="text" ng-model="src.cover" ng-change="update()"></input></td><td align="right"><a ng-show="is_url(src.cover)" class="hc" href="{{src.cover}}" target="_blank">Preview</a></td></tr>
         </tbody>
     </table>
 	<div class="pdvd" ng-show="!rec.create">
@@ -51,7 +51,7 @@
 		<div class="fl w100 pdvd">
 			<div ng-repeat="ch in all_ch" ng-class="{pdvd2: true, fl:true, hc: true}" ng-mouseover="ch.hover = true" ng-mouseleave="ch.hover=false">
 				<div class="rel">
-					<img class="close-btn clickable" ng-src="img/{{rec.edit? 'close.png' : 'empty.gif'}}" alt="Delete"></img>
+					<img class="close-btn clickable" ng-src="img/{{rec.edit? 'close.png' : 'empty.gif'}}" alt="Delete" ng-click="chdel(ch, rec)"></img>
 					<span ng-click="chclk(ch, src, rec)" ng-class="{active_ch: ch.active, inactive_ch: !ch.active, txtfff: ch.active, clickable: true, tag: true}">{{ch.title}}</span>
 					<form ng-submit="chput(ch)" ng-show="ch.editing && rec.edit" class="w100 inblk abs left0 top-edit">
 						<input type="text" class="" ng-model="ch.title">
@@ -61,8 +61,8 @@
 			</div>
 		</div>
 		<div class="fl w100">
-			<div class="hc pdvd fl"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><input class="underscore" type="text" ng-model="rec.newch.title" select-on-click/></div>
-			<div class="rl gbtn1 clickable bkg1 txtfff round3" ng-click="rec.edit=!rec.edit">{{rec.edit?'Done':'Edit'}}</div>
+			<div class="hc pdvd fl"><form class="hc" ng-submit="chadd(rec.newch)"><label class="pdvd">+</label><span class="underscore"><input class="non" type="text" ng-model="rec.newch.title" select-on-click/></span></div>
+			<div id="edit_btn" class="rl gbtn1 clickable bkg1 txtfff round3" ng-click="rec.edit=!rec.edit">{{rec.edit?'Done':'Edit'}}</div>
 		</div>
 	</div>
 </script>

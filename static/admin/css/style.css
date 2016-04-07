@@ -156,13 +156,25 @@
 }
 
 .tfurl {
-	width: 80%;
+	width: 100%;
 }
 
-.underscore {
+#edit_btn {
+	margin-top: 16px;
+}
+
+.mgv0 {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.non {
     border: 0;
     outline: 0;
     background: transparent;
+}
+
+.underscore {
 	border-bottom: 1px #808080 solid;
 }
 

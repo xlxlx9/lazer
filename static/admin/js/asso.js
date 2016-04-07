@@ -110,6 +110,32 @@ Asso = function() {
 		}
 	}
 
+	function removeChannel(ch, http, scope, R0) {
+		var i0 = R0.channels_data.indexOf(ch);
+		if(-1 != i0) R0.channels_data.splice(i0, 1);
+		var i1 = scope.all_ch.indexOf(ch);
+		if(-1 != i1) scope.all_ch.splice(i1, 1);
+		http.delete("/api/channels/" + ch._id)
+			.success(function(data) {
+				delete R0.id2ch[ch._id];
+				for(var i = 0; i < ch.sources.length; i++) {
+					var src = ch.sources[i];
+					var idx = null == src.tags? -1 : src.tags.indexOf(ch);
+					if(-1 == idx) {
+						console.log("Error in tag searching in " + src.title + " for " + ch.title);
+						continue;
+					}
+					src.tags.splice(idx, 1);
+				}
+			})
+			.error(function(error, data) {
+				console.log("Put channel back to list");
+				if(-1 != i0) R0.channels_data.splice(i0, 0, ch);
+				if(-1 != i1) scope.all_ch.splice(i1, 0, ch);
+			})
+			;
+	}
+
 	function generateNewSource() {
 		var obj = {"title": "Enter a name", "src": null, "icon": null, "cover": null, "type": "rss"};
 		return obj;
@@ -201,6 +227,9 @@ Asso = function() {
 			}
 			scope.chput = function(ch) {
 				updateChannel(ch, http);
+			}
+			scope.chdel = function(ch, rec) {
+				if(rec.edit) removeChannel(ch, http, scope, R0);
 			}
 	}
 
