@@ -314,7 +314,7 @@ router.route("/subscriptions/:uid")
 			res.send({ succ: -80, msg:"Empty subscription" });
 		}
 		Channel.find({ "_id": { $in: channels } })
-			   .populate({ path:"sources", populate: { path:"recent", model:Item, select: "title _id cover link date content icon"} })
+			   .populate({ path:"sources", populate: { path:"recent", model:Item, select: "title _id cover link date content icon, original"} })
 			   .exec(function(err, docs) {
 				   	if(err) { 
 						res.send(err);

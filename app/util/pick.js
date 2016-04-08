@@ -51,8 +51,23 @@ Picker.prototype.pick = function(docs, seconds, utrace) {
 				if(null == itemk.cover || "" == itemk.cover) {
 					itemk.cover = default_cover;
 				}
-				if(null != itemk.content && 160 < itemk.content.length) {
-					itemk.content = itemk.content.substring(0, 160);
+				var ecnt = 75;
+				if(null != itemk.content && ecnt< itemk.content.length) {
+					var ft = itemk.content;
+					var ends = [".", "!", "?"];
+					for(var ii = 0; ii < ends.length; ii++) {
+						var idx_end = ft.indexOf(ends[ii], ecnt);
+						if(-1 == idx_end) continue;
+						//console.log("Sentence end found @%d", idx_end);
+						if(' ' == ft[idx_end + 1]) idx_end ++;
+						itemk.summary = ft.substring(0, idx_end + 1);
+						break;
+					}
+					if(null == itemk.summary) {
+						console.warn("Empty summary for %s", itemk.title);
+					}
+				} else {
+					itemk.summary = itemk.content;
 				}
 				item_list.push(itemk);
 			}

@@ -6,6 +6,7 @@ var Schema       = mongoose.Schema;
 var ItemSchema = new Schema({
        title: String
 	 , content: String
+	 , summary: String
 	 , original: { type: String, default: null }
 	 , cover: String
 	 , link: String
