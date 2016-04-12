@@ -196,9 +196,10 @@ Reader.prototype.digest = function(source) {
 				if(null == current.cover) current.cover = _this.pick_between(ele, "src='", "'");
 				console.log("Retrieved image URL: %s", current.cover);
 			} else {
-				var type = _this.locate(it, "enclosure/type");
+				var type = _this.locate(it, "enclosure/$/type");
 				if(null != type && -1 != type.indexOf("image")) {
-					current.cover = _this.locate(it, "enclosure/url");
+					current.cover = _this.locate(it, "enclosure/$/url");
+					console.log("Image located: %s", current.cover);
 				}
 			}
 
