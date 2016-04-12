@@ -7,6 +7,7 @@ var ItemSchema = new Schema({
        title: String
 	 , content: String
 	 , summary: String
+	 , author: { type: String, default: "  " }
 	 , original: { type: String, default: null }
 	 , cover: String
 	 , link: String

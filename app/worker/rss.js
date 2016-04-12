@@ -189,7 +189,7 @@ Reader.prototype.digest = function(source) {
 			}
 
 			// find img element
-			var ele = _this.pick_node(it, ["content", "content:encoded", "description"], ["img"], [/facebook.*icon/, /twitter.*icon/, /google.*icon/, /ad\..*\/ad\//]);
+			var ele = _this.pick_node(it, ["content", "content:encoded", "description"], ["img"], [/facebook.*icon/, /twitter.*icon/, /google.*icon/, /ad\..*\/ad\//, /1\/rc\.img/]);
 			if(null != ele) {
 				//console.log("Image detected for %s: %s", current.title, ele);
 				current.cover = _this.pick_between(ele, "src=\"", "\"");
