@@ -67,7 +67,8 @@ Picker.prototype.pick = function(docs, seconds, utrace) {
 						break;
 					}
 					if(null == itemk.summary) {
-						console.warn("Empty summary for %s", itemk.title);
+						console.warn("Empty summary for %s, fallback to entire content", itemk.title);
+						itemk.summary = itemk.content;
 					}
 				} else {
 					itemk.summary = itemk.content;
