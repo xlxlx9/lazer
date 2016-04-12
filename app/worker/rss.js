@@ -189,11 +189,17 @@ Reader.prototype.digest = function(source) {
 			}
 
 			// find img element
-			var ele = _this.pick_node(it, ["content", "content:encoded", "description"], ["img"], [/facebook.*icon/, /twitter.*icon/, /google.*icon/, /ad\..*\/ad\//, /1\/rc\.img/]);
+			var ele = _this.pick_node(it, ["content", "content:encoded", "description"], ["img"], [/facebook.*icon/, /twitter.*icon/, /google.*icon/, /ad\..*\/ad\//, /ad\.doubleclick\.net/,/1\/rc\.img/]);
 			if(null != ele) {
 				//console.log("Image detected for %s: %s", current.title, ele);
 				current.cover = _this.pick_between(ele, "src=\"", "\"");
+				if(null == current.cover) current.cover = _this.pick_between(ele, "src='", "'");
 				console.log("Retrieved image URL: %s", current.cover);
+			} else {
+				var type = _this.locate(it, "enclosure/type");
+				if(null != type && -1 != type.indexOf("image")) {
+					current.cover = _this.locate(it, "enclosure/url");
+				}
 			}
 
 			current.source = source._id;

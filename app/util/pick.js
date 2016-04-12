@@ -51,6 +51,9 @@ Picker.prototype.pick = function(docs, seconds, utrace) {
 				if(null == itemk.cover || "" == itemk.cover) {
 					itemk.cover = default_cover;
 				}
+				if(null == itemk.author || "" == itemk.author) {
+					itemk.author = srcj.title;
+				}
 				var ecnt = 75;
 				if(null != itemk.content && ecnt< itemk.content.length) {
 					var ft = itemk.content;
