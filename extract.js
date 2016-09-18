@@ -17,6 +17,7 @@ mongoose.connection.on('error', function (err) {
 });
 
 var rss = require("./app/worker/rss");
+var watcher = require("./app/worker/watcher");
 var chalk = require("chalk");
 
 var gl = { rss: {} };
@@ -33,4 +34,9 @@ var minutes = 10;
 setInterval(function() {
 	rss.revisit(gl.rss);
 }, minutes * 60 * 1000);
+
+watcher.cleanup(7)
+setInterval(function() {
+	watcher.cleanup(7)
+}, 24 * 60 * 60 * 1000)
 
